@@ -2,27 +2,29 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 
 public class TestDriver {
+    /**
+     * To run this from the command line:
+     * 1. cd src
+     * 2. javac ./* && jar cvfe assignment-1.jar TestDriver ./*.class
+     * 3. java -ea -jar assignment-1.jar
+     * @param args passed in program arguments
+     */
     public static void main(String[] args) {
-        // Turn on assertions programmatically
-//        ClassLoader.getSystemClassLoader().setDefaultAssertionStatus(true);
-        // Could not find a consistent way of doing this, so -ea must be provided as a VM Option when invoking main().
+        System.out.println("======================================");
+        System.out.println("======Assignment-1 BufferArray========");
+        System.out.println("======================================");
+        System.out.println();
 
         // Test Subject
         BufferedArray buffer = new BufferedArray();
-
         System.out.println("Test Empty Buffer: ");
         buffer.display();
 
         // Test Insertions
+        System.out.println("Inserting elements...");
         for (int i = 0; i < 20; i++) {
            boolean result = buffer.insert(i);
            assert result;
-        }
-
-        // Test Find
-        for (int i = 0; i < 20; i++) {
-            boolean result = buffer.find(i);
-            assert result;
         }
 
         // Test Display
@@ -33,6 +35,7 @@ public class TestDriver {
         String expected = builder.toString();
         // capturing output
         PrintStream original_console = System.out;
+        System.out.println();
         System.out.println("Test Display: ");
         buffer.display();
         ByteArrayOutputStream console = new ByteArrayOutputStream();
@@ -41,9 +44,18 @@ public class TestDriver {
         String actual = console.toString();
         assert expected.equals(actual);
 
-        // Test Remove
+        // Restore Console
         System.setOut(original_console);
-        System.out.println("Testing Remove...");
+
+        // Test Find
+        System.out.println("\nTesting Find...\n");
+        for (int i = 0; i < 20; i++) {
+            boolean result = buffer.find(i);
+            assert result;
+        }
+
+        // Test Remove
+        System.out.println("Testing Remove...\n");
         int removed_value = 10;
         // assert that value to be removed is actually in BufferArray
         System.out.println("Original Buffer: ");
@@ -70,8 +82,8 @@ public class TestDriver {
 
 
         // Test Stable Remove
-        System.out.println("Test Stable Remove... ");
-        System.out.println("Creating new BufferArray...");
+        System.out.println("\nTest Stable Remove... ");
+        System.out.println("\nCreating new BufferArray...\n");
         BufferedArray stable_buffer = new BufferedArray();
         for (int i = 0; i < 20; i++) {
             boolean result = stable_buffer.insert(i);
