@@ -5,8 +5,10 @@ public class TestDriver {
     /**
      * To run this from the command line:
      * 1. cd src
-     * 2. javac ./* && jar cvfe assignment-1.jar TestDriver ./*.class
-     * 3. java -ea -jar assignment-1.jar
+     * 2. javac ./*
+     * 3. jar cvfe assignment-1.jar TestDriver ./*.class
+     * (found from: https://docs.oracle.com/javase/tutorial/deployment/jar/appman.html)
+     * 4. java -ea -jar assignment-1.jar
      * @param args passed in program arguments
      */
     public static void main(String[] args) {
