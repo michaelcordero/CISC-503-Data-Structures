@@ -1,7 +1,13 @@
 public class TestDriver2 {
     /**
-     *  This TestDriver2 tests the child classes of ArrayBuffer: ArrayBufferNoDups & ArrayBufferWithDups.
-     * @param args - program arguments obviously
+     *  The TestDriver2 tests the child classes of ArrayBuffer: ArrayBufferNoDups & ArrayBufferWithDups.
+     *  To run this from the command line:
+     *   1. cd src (or whatever directory the *.java files live in.)
+     *   2. javac ./*
+     *   3. jar cvfe assignment-2.jar TestDriver2 ./*.class
+     *   (found from: https://docs.oracle.com/javase/tutorial/deployment/jar/appman.html)
+     *   4. java -ea -jar assignment-2.jar
+     *   @param args passed in program arguments
      */
     public static void main(String[] args) {
         System.out.println("===============================================================");
