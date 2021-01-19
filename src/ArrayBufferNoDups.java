@@ -1,4 +1,4 @@
-// The ArrayBufferNoDups class should look like the ArrayBuffer class, only the insert operation has to change
+// The ArrayBufferNoDups class should look like the ArrayBuffer class, only the insert operation has to change.
 public class ArrayBufferNoDups extends ArrayBuffer {
 
     //////////////////////////////////////
