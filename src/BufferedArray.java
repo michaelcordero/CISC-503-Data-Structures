@@ -1,19 +1,10 @@
-public class ArrayBuffer {
+public class BufferedArray {
     /////////////////////////////
     // Properties
     ////////////////////////////
-    protected int numberOfElements = 0;
-    protected final int[] intArray;
-
-    //////////////////////////////////////
-    // Constructors
-    //////////////////////////////////////
-    public ArrayBuffer() {
-        intArray = new int[20];
-    }
-    public ArrayBuffer(int size) {
-        intArray = new int[size];
-    }
+    private int numberOfElements = 0;
+    private static final int BUFFER_SIZE = 20;
+    private final int[] intArray = new int[BUFFER_SIZE];
 
     //////////////////////////////////////
     // PRIVATE API
@@ -47,7 +38,7 @@ public class ArrayBuffer {
      * @return true or false if operation was successful
      */
     public Boolean insert(int value) {
-        if (numberOfElements == intArray.length) {
+        if (numberOfElements == BUFFER_SIZE) {
             return false;
         } else {
             intArray[numberOfElements] = value;
@@ -63,7 +54,7 @@ public class ArrayBuffer {
      * @param value - the value to be removed
      * @return - true or false if the operation was successful
      */
-    public Boolean fastRemove(int value) {
+    public Boolean remove(int value) {
         if (find(value)) {
             int lastElement = intArray[numberOfElements - 1];
             intArray[locationOf(value)] = lastElement;
