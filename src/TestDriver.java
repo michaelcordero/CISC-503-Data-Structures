@@ -13,12 +13,12 @@ public class TestDriver {
      */
     public static void main(String[] args) {
         System.out.println("======================================");
-        System.out.println("======Assignment-1 BufferArray========");
+        System.out.println("======Assignment-1 ArrayBuffer========");
         System.out.println("======================================");
         System.out.println();
 
         // Test Subject
-        BufferedArray buffer = new BufferedArray();
+        ArrayBuffer buffer = new ArrayBuffer();
         System.out.println("Test Empty Buffer: ");
         buffer.display();
 
@@ -65,19 +65,19 @@ public class TestDriver {
         boolean found = buffer.find(removed_value);
         assert found;
         // assert that we removed 10
-        boolean removed = buffer.remove(removed_value);
+        boolean removed = buffer.fastRemove(removed_value);
         assert removed;
         System.out.println("Remove: " + removed_value);
         buffer.display();
         // assert remove another
         int second_removed_value = 1;
-        boolean second_remove = buffer.remove(second_removed_value);
+        boolean second_remove = buffer.fastRemove(second_removed_value);
         System.out.println("2nd Remove: " + second_removed_value);
         buffer.display();
         assert second_remove;
         // assert remove a third
         int third_remove_value = 7;
-        boolean third_remove = buffer.remove(third_remove_value);
+        boolean third_remove = buffer.fastRemove(third_remove_value);
         System.out.println("3rd Remove: " + third_remove_value);
         buffer.display();
         assert third_remove;
@@ -86,7 +86,7 @@ public class TestDriver {
         // Test Stable Remove
         System.out.println("\nTest Stable Remove... ");
         System.out.println("\nCreating new BufferArray...\n");
-        BufferedArray stable_buffer = new BufferedArray();
+        ArrayBuffer stable_buffer = new ArrayBuffer();
         for (int i = 0; i < 20; i++) {
             boolean result = stable_buffer.insert(i);
             assert result;
