@@ -26,7 +26,7 @@ public class ArrayBuffer {
      * @param target - the value that is to be searched for.
      * @return -1 if not values found that match otherwise, return the index of the target.
      */
-    private int locationOf(int target) {
+    protected int locationOf(int target) {
         for (int i = 0; i < numberOfElements; i++) {
             if (intArray[i] == target) {
                 return i;
@@ -82,8 +82,8 @@ public class ArrayBuffer {
      * @return - true or false if the operation was successful
      */
     public Boolean stableRemove(int target) {
-        if (find(target)) {
-            int location = locationOf(target);
+        int location = locationOf(target);
+        if (location != -1) {
             for (int i = location; i < numberOfElements - 1; i++) {
                 int next_location = i + 1;
                 intArray[i] = intArray[next_location];
