@@ -4,49 +4,36 @@ public class SortedArrayBufferNoDups extends ArrayBufferNoDups {
     }
 
     /**
-     * This method ensures that integer elements entered into the SortedArrayBuffer are inserted into their ordered
-     * location. It does not allow duplicates.
+     * This method inserts an integer value into it's appropriate position. Duplicates are not allowed.
+     * The guarding clause is there to protect against duplicates and for when the buffer is already full.
+     * This problem of inserting into the correct position can be solved in 3 simple steps.
+     * 1. Find the destination index.
+     * 2. Shift the existing elements down (or right) to make room for the new incoming element.
+     * 3. Finally, insert the new element.
      * @param value - value to be inserted
-     * @return - true if insertion is successful, false if not.
+     * @return true or false if operation occurred.
      */
     @Override
     public Boolean insert(int value) {
-        // No Duplicates case. Early termination.
-        if (find(value)) {
+        // Guard clause against insertions when buffer is full or attempted duplicate entry.
+        if (numberOfElements == intArray.length || find(value)) {
             return false;
         }
-        // Empty Array Buffer Case. Early Insert, no sorted insert required.
-        if (numberOfElements == 0) {
-            intArray[0] = value;
-            numberOfElements++;
-            return true;
-        }
-        // Array Buffer size case
-        if (numberOfElements != intArray.length) {
-            if (value > intArray[numberOfElements - 1 ]) {
-                intArray[numberOfElements] = value;
-                numberOfElements++;
-                return true;
-            } else if (value < intArray[numberOfElements - 1]) {
-                // find destination index
-                int destination = 0;
-                for (int i = 0; i < numberOfElements - 1; i++) {
-                    if (value > intArray[i]) {
-                        destination = i + 1;
-                    }
-                }
-                // shift elements down
-                for (int i = numberOfElements - 1; i >= destination; i--) {
-                    intArray[i+1] = intArray[i];
-                }
-                // finally insert element
-                intArray[destination] = value;
-                numberOfElements++;
-                return true;
+        // Find destination index
+        int destination = 0;
+        for ( ; destination <= numberOfElements - 1; destination++) {
+            if (value < intArray[destination]) {
+                break;
             }
         }
-        // Array Buffer is full
-        return false;
+        // Shift elements down
+        for (int i = numberOfElements - 1; i >= destination; i--) {
+            intArray[i + 1] = intArray[i];
+        }
+        // Finally insert element
+        intArray[destination] = value;
+        numberOfElements++;
+        return true;
     }
 
     /**
@@ -62,8 +49,7 @@ public class SortedArrayBufferNoDups extends ArrayBufferNoDups {
             if (intArray[i] > target) {
                 // early termination optimization
                 return -1;
-            }
-            else if (intArray[i] == target) {
+            } else if (intArray[i] == target) {
                 return i;
             }
         }

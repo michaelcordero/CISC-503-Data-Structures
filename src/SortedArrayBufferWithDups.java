@@ -4,46 +4,36 @@ public class SortedArrayBufferWithDups extends ArrayBufferWithDups{
     }
 
     /**
-     * This method inserts an integer value, whether it's a duplicate or not, into it's appropriate position.
-     * The duplicates are enabled by the <= or >= operators. Whenever an element to be inserted is less than what's
-     * already in the list, special logic must take care to shift elements down to make room for the new element.
+     * This method inserts an integer value into it's ordered position. Duplicates are inserted consecutively.
+     * The guarding clause is there to protect against insertions when the buffer is full.
+     * This problem of inserting a new element into the correct position can be broken down into 3 simple steps.
+     * 1. Find the destination index.
+     * 2. Shift the elements down (or right) to make room for the new incoming element.
+     * 3. Finally, insert the new element.
      * @param value - value to be inserted
      * @return true or false if operation occurred.
      */
     @Override
     public Boolean insert(int value) {
-        // Empty Array Buffer Case. Early Insert, no sorted insert required.
-        if (numberOfElements == 0) {
-            intArray[0] = value;
-            numberOfElements++;
-            return true;
+        // Guard clause against insertions when buffer is full
+        if (numberOfElements == intArray.length) {
+            return false;
         }
-        // Array Buffer not full case
-        if (numberOfElements != intArray.length) {
-            if (value >= intArray[numberOfElements - 1 ]) {
-                intArray[numberOfElements] = value;
-                numberOfElements++;
-                return true;
-            } else if (value <= intArray[numberOfElements - 1]) {
-                // find destination index
-                int destination = 0;
-                for (int i = 0; i < numberOfElements - 1; i++) {
-                    if (value > intArray[i]) {
-                        destination = i + 1;
-                    }
-                }
-                // shift elements down
-                for (int i = numberOfElements - 1; i >= destination; i--) {
-                    intArray[i+1] = intArray[i];
-                }
-                // finally insert element
-                intArray[destination] = value;
-                numberOfElements++;
-                return true;
+        // Find destination index
+        int destination = 0;
+        for (; destination <= numberOfElements - 1; destination++) {
+            if (value < intArray[destination]) {
+                break;
             }
         }
-        // Array Buffer is full
-        return false;
+        // Shift elements down
+        for (int i = numberOfElements -1; i >= destination ; i--) {
+            intArray[i+1] = intArray[i];
+        }
+        // Finally insert element
+        intArray[destination] = value;
+        numberOfElements++;
+        return true;
     }
 
     /**
