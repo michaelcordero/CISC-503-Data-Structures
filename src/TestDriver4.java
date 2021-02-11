@@ -2,6 +2,14 @@ import java.util.Arrays;
 
 public class TestDriver4 {
 
+    public static int exponent(int base, int exponent) {
+        // idempotent
+        if (exponent == 0) {
+            return 1;
+        }
+        return base * exponent(base, --exponent);
+    }
+
 
     public static void main(String[] args) {
         System.out.println("===============================================================");
@@ -112,6 +120,20 @@ public class TestDriver4 {
             });
             System.out.println();
         }
+
+        System.out.println();
+        System.out.println("=============================================");
+        System.out.println("======== Test exponent function    ==========");
+        System.out.println("=============================================");
+        int base = 2;
+        for (int i = 0; i < 10; i++) {
+            System.out.println(base + " ^ " + i + " = "+ exponent(base,i));
+        }
+        base = -3;
+        for (int i = 0; i < 10; i++) {
+            System.out.println(base + " ^ " + i + " = "+ exponent(base,i));
+        }
+
 
 
     }
