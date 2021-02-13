@@ -10,6 +10,25 @@ public class TestDriver4 {
         return base * exponent(base, --exponent);
     }
 
+    public static int knapsack(int Weight, int[] weights, int[] values, int i) {
+        // ith item is zero, then item cannot be included
+        // if the target weight is zero, the no items can be included.
+        if (i == 0 || Weight == 0) {
+            return 0;
+        }
+        // if the weight of the ith item, outweighs the target weight then it cannot
+        // be included in the solution, so skip to the next.
+        if (weights[i - 1] > Weight) {
+            return knapsack(Weight, weights, values, i - 1);
+        } else {
+            // Return the maximum of two cases:
+            // 1. the ith item to be included
+            // 2. the items not included
+            return Math.max(values[i - 1] + knapsack(Weight - weights[i - 1], weights, values, i - 1),
+                    knapsack(Weight, weights, values, i - 1));
+        }
+    }
+
 
     public static void main(String[] args) {
         System.out.println("===============================================================");
@@ -133,8 +152,14 @@ public class TestDriver4 {
         for (int i = 0; i < 10; i++) {
             System.out.println(base + " ^ " + i + " = "+ exponent(base,i));
         }
-
-
-
+        System.out.println();
+        System.out.println("=============================================");
+        System.out.println("======== Knapsack Solution    ===============");
+        System.out.println("=============================================");
+        int target_weight = 20;
+        int[] values = new int[]{150,  350, 400, 300, 200 };
+        int[] weights = new int[] {11, 8,   7,   6,   5};
+        int result = knapsack(target_weight, weights,values, values.length );
+        System.out.println("Result: " + result);
     }
 }
