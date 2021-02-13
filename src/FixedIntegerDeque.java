@@ -66,7 +66,7 @@ public class FixedIntegerDeque {
         if (numberOfElements == MAX) {
             return;
         }
-        if (x >= 100) {
+        if (x > 100) {
             push_front(x);
         } else {
             push_back(x);
