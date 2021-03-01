@@ -9,17 +9,23 @@ import java.util.Optional;
  */
 public class EvaluateExpression {
 
-    // properties
+    /////////////////////////////////////////////////////////
+    // Properties
+    /////////////////////////////////////////////////////////
     private final ExpressionStack<Integer> operands;
     private final ExpressionStack<ExpressionOperator> operators;
 
-    // constructors
+    //////////////////////////////////////////////////////////////
+    // Constructors
+    /////////////////////////////////////////////////////////////
     public EvaluateExpression() {
         this.operands = new ExpressionStack<>();
         this.operators = new ExpressionStack<>();
     }
 
-    // private
+    //////////////////////////////////////////////////////////////
+    // Private
+    /////////////////////////////////////////////////////////////
     private void evaluate() {
         Integer b = operands.pop();
         Integer a = operands.pop();
@@ -51,6 +57,9 @@ public class EvaluateExpression {
         }
     }
 
+    //////////////////////////////////////////////////////////////
+    // Private
+    /////////////////////////////////////////////////////////////
     private boolean containsOperator(ExpressionOperator operator) {
         boolean result = false;
         ExpressionStack.ExpressionStackIterator<ExpressionOperator> itr =
@@ -63,8 +72,9 @@ public class EvaluateExpression {
         return result;
     }
 
-    // public API
-
+    //////////////////////////////////////////////////////////////
+    // Private API
+    /////////////////////////////////////////////////////////////
     public void push(Integer operand) {
         operands.push(operand);
     }

@@ -7,7 +7,9 @@ import java.util.Iterator;
  */
 public class ExpressionStack<T> implements Iterable<T> {
 
+    /////////////////////////////////////////////////////////
     // Properties
+    /////////////////////////////////////////////////////////
     private ExpressionNode<T> top;
 
     @Override
@@ -46,10 +48,15 @@ public class ExpressionStack<T> implements Iterable<T> {
      * @param <E>
      */
     protected static class ExpressionNode<E> {
+        /////////////////////////////////////////////////
+        // Properties
+        ////////////////////////////////////////////////
         private final E value;
         private ExpressionNode<E> predecessor;
 
-        // constructors
+        /////////////////////////////////////////////////
+        // Constructors
+        ////////////////////////////////////////////////
         private ExpressionNode(E info) {
             value = info;
         }
@@ -60,10 +67,20 @@ public class ExpressionStack<T> implements Iterable<T> {
         }
     }
 
+    //////////////////////////////////////////////////////////////
     // Constructors
+    /////////////////////////////////////////////////////////////
     public ExpressionStack() {
         top = null;
     }
+
+    public ExpressionStack(T value) {
+        top = new ExpressionNode<>(value);
+    }
+
+    ////////////////////////////////////////////////////////////
+    // Public API
+    ///////////////////////////////////////////////////////////
 
     @Override
     public String toString() {
@@ -77,12 +94,6 @@ public class ExpressionStack<T> implements Iterable<T> {
         }
         return builder.toString();
     }
-
-    public ExpressionStack(T value) {
-        top = new ExpressionNode<>(value);
-    }
-
-    // Public API
 
     public void push(T value) {
         ExpressionNode<T> element = new ExpressionNode<>(value);
