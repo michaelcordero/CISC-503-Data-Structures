@@ -70,12 +70,23 @@ public class EvaluateExpression {
     public void push(ExpressionOperator op) {
         switch (op) {
             case ADD:
-            case SUBTRACT:
-            case MULTIPLY:
-            case DIVIDE: {
+            case SUBTRACT: {
                 if (!state.get()) {
                     while (!operators.empty()) {
                         evaluate();
+                    }
+                }
+                operators.push(op);
+                break;
+            }
+            case MULTIPLY:
+            case DIVIDE: {
+                if (!state.get()) {
+                    for (ExpressionOperator operator : operators) {
+                        if (operator == ExpressionOperator.MULTIPLY
+                                || operator == ExpressionOperator.DIVIDE) {
+                            evaluate();
+                        }
                     }
                 }
                 operators.push(op);
@@ -114,7 +125,7 @@ public class EvaluateExpression {
         // let's try to see if it's a valid operator
         Optional<ExpressionOperator> expression_operator = Arrays.stream(ExpressionOperator.values())
                 .filter(eo -> eo.operator.equals(symbol)).findFirst();
-        this.push(expression_operator.orElseThrow( () -> new IllegalArgumentException("invalid symbol: " + symbol)));
+        this.push(expression_operator.orElseThrow(() -> new IllegalArgumentException("invalid symbol: " + symbol)));
     }
 
     /**
