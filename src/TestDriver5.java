@@ -18,23 +18,25 @@ public class TestDriver5 {
         for (int i = 0; i <= 10; i++) {
             es.push(i);
         }
+        System.out.println(es.toString());
         for (int i = 10; i >= 0; i--) {
             Integer peeked = es.peek();
             assert peeked == i;
             es.pop();
         }
-
+        System.out.println(es.toString());
         assert es.empty();
 
         // Re-initialize values
         for (int i = 0; i <= 10; i++) {
             es.push(i);
         }
+        System.out.println(es.toString());
         for (int i = 10; i >= 0; i--) {
             Integer popped = es.pop();
             assert popped == i;
         }
-
+        System.out.println(es.toString());
         // Check empty method
         assert es.empty();
 
