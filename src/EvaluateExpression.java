@@ -1,5 +1,6 @@
 import java.util.Arrays;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * The EvaluateExpression class serves as a container class that is composed of two ExpressionStacks, one being the
@@ -14,6 +15,7 @@ public class EvaluateExpression {
     /////////////////////////////////////////////////////////
     private final ExpressionStack<Integer> operands;
     private final ExpressionStack<ExpressionOperator> operators;
+    private final AtomicInteger state; // finite state machine for when open parentheses are or aren't on the stack.
 
     //////////////////////////////////////////////////////////////
     // Constructors
@@ -21,11 +23,22 @@ public class EvaluateExpression {
     public EvaluateExpression() {
         this.operands = new ExpressionStack<>();
         this.operators = new ExpressionStack<>();
+        this.state = new AtomicInteger(0);
     }
 
     //////////////////////////////////////////////////////////////
     // Private
     /////////////////////////////////////////////////////////////
+
+    /**
+     * This method answers the question of state. Does the stack currently contain one or more open parenthesis?
+     * If true, then do not process the rest of the operators.
+     * @return true or false
+     */
+    private boolean isWithoutOpen() {
+        return state.get() < 1;
+    }
+
     private void evaluate() {
         Integer b = operands.pop();
         Integer a = operands.pop();
@@ -58,21 +71,6 @@ public class EvaluateExpression {
     }
 
     //////////////////////////////////////////////////////////////
-    // Private
-    /////////////////////////////////////////////////////////////
-    private boolean containsOperator(ExpressionOperator operator) {
-        boolean result = false;
-        ExpressionStack.ExpressionStackIterator<ExpressionOperator> itr =
-                (ExpressionStack.ExpressionStackIterator<ExpressionOperator>) operators.iterator();
-        while (itr.hasNext()) {
-            if (itr.next() == operator) {
-                result = true;
-            }
-        }
-        return result;
-    }
-
-    //////////////////////////////////////////////////////////////
     // Public API
     /////////////////////////////////////////////////////////////
     public void push(Integer operand) {
@@ -83,7 +81,7 @@ public class EvaluateExpression {
         switch (op) {
             case ADD:
             case SUBTRACT: {
-                if (!containsOperator(ExpressionOperator.OPEN)) {
+                if (isWithoutOpen()) {
                     while (!operators.empty()) {
                         evaluate();
                     }
@@ -93,9 +91,12 @@ public class EvaluateExpression {
             }
             case MULTIPLY:
             case DIVIDE: {
-                if (!containsOperator(ExpressionOperator.OPEN)) {
-                    while (!operators.empty() && !containsOperator(ExpressionOperator.OPEN)) {
-                        evaluate();
+                if (isWithoutOpen()) {
+                    for (ExpressionOperator operator : operators) {
+                        if (operator == ExpressionOperator.MULTIPLY
+                                || operator == ExpressionOperator.DIVIDE) {
+                            evaluate();
+                        }
                     }
                 }
                 operators.push(op);
@@ -103,13 +104,19 @@ public class EvaluateExpression {
             }
             case OPEN:
                 operators.push(op);
+                state.getAndIncrement();
                 break;
             case CLOSE: {
+                // QA check
+                if (isWithoutOpen()) {
+                    throw new IllegalArgumentException("attempt to un-balance parenthesis rejected");
+                }
                 while (!operators.empty() && operators.peek() != ExpressionOperator.OPEN) {
                     evaluate();
                 }
                 // popping open parenthesis off stack
                 operators.pop();
+                state.getAndDecrement();
                 break;
             }
         }
@@ -118,20 +125,21 @@ public class EvaluateExpression {
     /**
      * This method is an overload to the previous one, in case users don't feel like using the enum.
      *
-     * @param operator - element to be pushed onto the operator stack
+     * @param symbol - element to be pushed onto the operator stack
      * @throws IllegalArgumentException - if none of them match
      */
-    public void push(String operator) throws IllegalArgumentException {
+    public void push(String symbol) throws IllegalArgumentException {
         try {
-            Integer number = Integer.parseInt(operator);
+            Integer number = Integer.parseInt(symbol);
             push(number);
             return;
         } catch (NumberFormatException e) {
             // ignore, if it's not a number
         }
+        // let's try to see if it's a valid operator
         Optional<ExpressionOperator> expression_operator = Arrays.stream(ExpressionOperator.values())
-                .filter(eo -> eo.operator.equals(operator)).findFirst();
-        expression_operator.ifPresent(this::push);
+                .filter(eo -> eo.operator.equals(symbol)).findFirst();
+        this.push(expression_operator.orElseThrow(() -> new IllegalArgumentException("invalid symbol: " + symbol)));
     }
 
     /**

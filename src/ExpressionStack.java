@@ -1,8 +1,8 @@
 import java.util.Iterator;
 
 /**
- * The purpose of this class is to act as a container for any type of expressions that need to be evaluated in the LIFO
- * order. Under the hood it is using a singly linked-list implementation of the stack ADT.
+ * The purpose of this class is to act as a container for any type of arithmetic expressions that need to be evaluated
+ * in the LIFO order. Under the hood it is using a singly linked-list implementation of the stack ADT.
  * @param <T>
  */
 public class ExpressionStack<T> implements Iterable<T> {
