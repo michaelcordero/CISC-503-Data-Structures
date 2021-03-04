@@ -1,6 +1,6 @@
 import java.util.Arrays;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * The EvaluateExpression class serves as a container class that is composed of two ExpressionStacks, one being the
@@ -15,7 +15,7 @@ public class EvaluateExpression {
     /////////////////////////////////////////////////////////
     private final ExpressionStack<Integer> operands;
     private final ExpressionStack<ExpressionOperator> operators;
-    private final AtomicBoolean state; // finite state machine for when open parenthesis is or isn't on the stack.
+    private final AtomicInteger state; // finite state machine for when open parentheses are or aren't on the stack.
 
     //////////////////////////////////////////////////////////////
     // Constructors
@@ -23,12 +23,22 @@ public class EvaluateExpression {
     public EvaluateExpression() {
         this.operands = new ExpressionStack<>();
         this.operators = new ExpressionStack<>();
-        this.state = new AtomicBoolean(false);
+        this.state = new AtomicInteger(0);
     }
 
     //////////////////////////////////////////////////////////////
     // Private
     /////////////////////////////////////////////////////////////
+
+    /**
+     * This method answers the question of state. Does the stack currently contain one or more open parenthesis?
+     * If true, then do not process the rest of the operators.
+     * @return true or false
+     */
+    private boolean isWithoutOpen() {
+        return state.get() < 1;
+    }
+
     private void evaluate() {
         Integer b = operands.pop();
         Integer a = operands.pop();
@@ -71,7 +81,7 @@ public class EvaluateExpression {
         switch (op) {
             case ADD:
             case SUBTRACT: {
-                if (!state.get()) {
+                if (isWithoutOpen()) {
                     while (!operators.empty()) {
                         evaluate();
                     }
@@ -81,7 +91,7 @@ public class EvaluateExpression {
             }
             case MULTIPLY:
             case DIVIDE: {
-                if (!state.get()) {
+                if (isWithoutOpen()) {
                     for (ExpressionOperator operator : operators) {
                         if (operator == ExpressionOperator.MULTIPLY
                                 || operator == ExpressionOperator.DIVIDE) {
@@ -94,15 +104,19 @@ public class EvaluateExpression {
             }
             case OPEN:
                 operators.push(op);
-                state.set(true);
+                state.getAndIncrement();
                 break;
             case CLOSE: {
+                // QA check
+                if (isWithoutOpen()) {
+                    throw new IllegalArgumentException("attempt to un-balance parenthesis rejected");
+                }
                 while (!operators.empty() && operators.peek() != ExpressionOperator.OPEN) {
                     evaluate();
                 }
                 // popping open parenthesis off stack
                 operators.pop();
-                state.set(false);
+                state.getAndDecrement();
                 break;
             }
         }

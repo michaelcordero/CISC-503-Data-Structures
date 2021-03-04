@@ -86,10 +86,11 @@ public class TestDriver5 {
         System.out.println("===========    Test EvaluateExpression Scan String   ==========");
         System.out.println("===============================================================");
         EvaluateExpression tokens = new EvaluateExpression();
-        String test = "50,50,+,(,10,10,*,),+";
+        String test = "50,50,+,(,(,10,10,*,),*,2,),+";
         StringTokenizer tokenizer = new StringTokenizer(test, ",");
         while (tokenizer.hasMoreTokens()) {
-            tokens.push(tokenizer.nextToken());
+            String token = tokenizer.nextToken();
+            tokens.push(token);
         }
         tokens.terminate();
         System.out.println(tokens.toString());
