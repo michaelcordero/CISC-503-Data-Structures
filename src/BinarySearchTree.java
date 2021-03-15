@@ -97,6 +97,14 @@ public class BinarySearchTree<K,V> implements BinaryTree<K,V> {
         }
     }
 
+    private int innerHeight(BinaryTreeNode<K,V> node) {
+        if (node == null) {
+            return -1;
+        } else {
+            return Math.max(innerHeight(node.left()), innerHeight(node.right())) + 1;
+        }
+    }
+
     private <R> void breadth(BinaryTreeNode<K,V> node, Function<BinaryTreeNode<K,V>,R> function) {
         Queue<BinaryTreeNode<K,V>> queue = new LinkedBlockingQueue<>();
         if (node != null) {
@@ -108,8 +116,12 @@ public class BinarySearchTree<K,V> implements BinaryTree<K,V> {
                     function.apply(node);
                 }
                 // enqueue the children from left to right
-                queue.add(node.left());
-                queue.add(node.right());
+                if (node.left() != null) {
+                    queue.add(node.left());
+                }
+                if (node.right() != null) {
+                    queue.add(node.right());
+                }
             }
         }
     }
@@ -399,6 +411,17 @@ public class BinarySearchTree<K,V> implements BinaryTree<K,V> {
     }
 
     /**
+     * This method computes the height of the tree.
+     * Definition: The height of a node is the number of nodes (excluding the node) on the longest path from the node
+     * to a leaf.
+     * @return - an int representing the height of the tree.
+     */
+    @Override
+    public int height() {
+        return innerHeight(root);
+    }
+
+    /**
      * This solution basically makes use of the fact that since we are traversing the Tree anyway, we might as well
      * perform the operation at that time. The textbook's solution wastes time & space. When creating a reusable
      * iterator, it has to traverse the elements, then store the elements in a data structure. Effectively doubling the
@@ -467,5 +490,22 @@ public class BinarySearchTree<K,V> implements BinaryTree<K,V> {
             return null;
         });
         return single_parent_count.get();
+    }
+
+    /**
+     * This method computes and prints each element and it's height at each level.
+     * If you need proof, uncomment the parent selection and you can draw out the tree and see for yourself.
+     */
+    @Override
+    public void nodeHeight() {
+        traverser(TraversalType.BREADTH, (node) -> {
+            V element = node.getValue();
+//            Optional<BinaryTreeNode<K,V>> parent = Optional.ofNullable(node.parent());
+            int height = innerHeight(node);
+            System.out.print("Element: " + element + " Height: " + height);
+//            parent.ifPresent(kvBinaryTreeNode -> System.out.print(" Parent " + kvBinaryTreeNode.getValue().toString()));
+            System.out.println();
+            return null;
+        });
     }
 }

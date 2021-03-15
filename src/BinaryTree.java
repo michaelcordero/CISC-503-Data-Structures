@@ -38,7 +38,7 @@ public interface BinaryTree<K,V> extends Map<K, V> {
     // data queries
     void balance();
 //    int level(BinaryTreeNode<K,V> node);
-//    int height(BinaryTreeNode<K,V> node);
+    int height();
 //    V min();
 //    V max();
     // Traversals
@@ -52,5 +52,5 @@ public interface BinaryTree<K,V> extends Map<K, V> {
     int leavesCount();
     void swapTrees();
     int singleParent();
-//    void valueHeight();
+    void nodeHeight();
 }

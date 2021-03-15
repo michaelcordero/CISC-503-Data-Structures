@@ -86,6 +86,10 @@ public class TestDriver6 {
         int single_parent_count = bst.singleParent();
         System.out.println("Single Parents: " + single_parent_count);
         System.out.println("================================");
+        System.out.println("====  TestQuestion 7: ==========");
+        System.out.println("================================");
+        bst.nodeHeight();
+        System.out.println("================================");
         System.out.println("====  Test swap trees    =======");
         System.out.println("================================");
 
