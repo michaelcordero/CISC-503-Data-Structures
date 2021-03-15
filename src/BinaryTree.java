@@ -1,5 +1,6 @@
 import java.util.Iterator;
 import java.util.Map;
+import java.util.function.Function;
 
 public interface BinaryTree<K,V> extends Map<K, V>, Iterable<BinaryTree.BinaryTreeNode<K,V>> {
     ///////////////////////////////////////////////
@@ -11,7 +12,7 @@ public interface BinaryTree<K,V> extends Map<K, V>, Iterable<BinaryTree.BinaryTr
         BinaryTreeNode<K,V> left();
         BinaryTreeNode<K,V> right();
         // quality of life methods
-        default boolean isSingleParent() { return left()!= null ^ right() != null; }
+        default boolean isSingleParent() { return left() != null ^ right() != null; }
         default boolean isParent() {
             return left() != null || right() != null;
         }
@@ -42,15 +43,15 @@ public interface BinaryTree<K,V> extends Map<K, V>, Iterable<BinaryTree.BinaryTr
 //    V min();
 //    V max();
     // Traversals
-    Iterator<BinaryTreeNode<K,V>> traverser(TraversalType traversalType);
+    Iterator<BinaryTreeNode<K,V>> traverser(TraversalType traversalType, Function<BinaryTreeNode<K,V>,Void> function);
 
 
     //////////////////////////////////////////////
     // CISC-503 methods
     //////////////////////////////////////////////
-//    int nodeCount(BinaryTreeNode<K,V> root);
-//    int leavesCount(BinaryTreeNode<K,V> root);
-//    void swapTrees(BinaryTreeNode<K,V> root);
-//    int singleParent();
+    int nodeCount(BinaryTreeNode<K,V> node);
+    int leavesCount(BinaryTreeNode<K,V> node);
+    void swapTrees(BinaryTreeNode<K,V> node);
+    int singleParent();
 //    void valueHeight();
 }

@@ -1,5 +1,7 @@
 import java.util.*;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Function;
 
 public class BinarySearchTree<K,V> implements BinaryTree<K,V> {
     ///////////////////////////////////////////////
@@ -75,7 +77,7 @@ public class BinarySearchTree<K,V> implements BinaryTree<K,V> {
         if (node == null) {
             return 0;
         }
-        return amount(node.left()) + amount(node.right()) + 1;
+        return 1 + amount(node.left()) + amount(node.right());
     }
 
     ///////////////////////////////////////////////
@@ -318,7 +320,7 @@ public class BinarySearchTree<K,V> implements BinaryTree<K,V> {
      * @param node - current node to be processed. invoker of this method should start at the root node.
      * @param deque - container structure to store the pre-iterated elements.
      */
-    private void breadth(BinaryTreeNode<K,V> node, ArrayDeque<BinaryTreeNode<K,V>> deque) {
+    private void breadth(BinaryTreeNode<K,V> node, ArrayDeque<BinaryTreeNode<K,V>> deque, Function<BinaryTreeNode<K,V>,Void> function) {
         Queue<BinaryTreeNode<K,V>> queue = new LinkedBlockingQueue<>();
         if (node != null) {
             queue.add(node);
@@ -326,6 +328,9 @@ public class BinarySearchTree<K,V> implements BinaryTree<K,V> {
                 node = queue.poll();
                 // visit the node, i.e. perform the operation
                 deque.add(node);
+                if (function != null) {
+                    function.apply(node);
+                }
                 // enqueue the children from left to right
                 queue.add(node.left());
                 queue.add(node.right());
@@ -333,7 +338,7 @@ public class BinarySearchTree<K,V> implements BinaryTree<K,V> {
         }
     }
 
-    private void depth(BinaryTreeNode<K,V> node, ArrayDeque<BinaryTreeNode<K,V>> deque) {
+    private void depth(BinaryTreeNode<K,V> node, ArrayDeque<BinaryTreeNode<K,V>> deque, Function<BinaryTreeNode<K,V>,Void> function) {
         Stack<BinaryTreeNode<K,V>> stack = new Stack<>();
         if (node != null) {
             stack.push(node);
@@ -341,6 +346,9 @@ public class BinarySearchTree<K,V> implements BinaryTree<K,V> {
                 node = stack.pop();
                 // visit the node, i.e. perform the operation
                 deque.push(node);
+                if (function != null) {
+                    function.apply(node);
+                }
                 // push the children from right to left
                 stack.push(node.right());
                 stack.push(node.left());
@@ -348,30 +356,39 @@ public class BinarySearchTree<K,V> implements BinaryTree<K,V> {
         }
     }
 
-    private void preorder(BinaryTreeNode<K,V> node, ArrayDeque<BinaryTreeNode<K,V>> deque) {
+    private void preorder(BinaryTreeNode<K,V> node, ArrayDeque<BinaryTreeNode<K,V>> deque, Function<BinaryTreeNode<K,V>,Void> function) {
         // Root. Left. Right.
         if (node != null) {
             deque.add(node);
-            preorder(node.left(), deque);
-            preorder(node.right(), deque);
+            if (function != null) {
+                function.apply(node);
+            }
+            preorder(node.left(), deque, function);
+            preorder(node.right(), deque, function);
         }
     }
 
-    private void inorder(BinaryTreeNode<K,V> node, ArrayDeque<BinaryTreeNode<K,V>> deque) {
+    private void inorder(BinaryTreeNode<K,V> node, ArrayDeque<BinaryTreeNode<K,V>> deque, Function<BinaryTreeNode<K,V>,Void> function) {
         // Left. Root. Right.
         if (node != null) {
-            inorder(node.left(),deque);
+            inorder(node.left(),deque, function);
             deque.add(node);
-            inorder(node.right(),deque);
+            if (function != null) {
+                function.apply(node);
+            }
+            inorder(node.right(),deque, function);
         }
     }
 
-    private void postorder(BinaryTreeNode<K,V> node, ArrayDeque<BinaryTreeNode<K,V>> deque) {
+    private void postorder(BinaryTreeNode<K,V> node, ArrayDeque<BinaryTreeNode<K,V>> deque, Function<BinaryTreeNode<K,V>,Void> function) {
         // Left. Right. Root.
         if (node != null) {
-            postorder(node.left(),deque);
-            postorder(node.right(),deque);
+            postorder(node.left(),deque, function);
+            postorder(node.right(),deque, function);
             deque.add(node);
+            if (function != null) {
+                function.apply(node);
+            }
         }
     }
 
@@ -403,7 +420,7 @@ public class BinarySearchTree<K,V> implements BinaryTree<K,V> {
 
     @Override
     public void balance() {
-        Iterator<BinaryTreeNode<K,V>> itr = traverser(TraversalType.INORDER);
+        Iterator<BinaryTreeNode<K,V>> itr = traverser(TraversalType.INORDER, null);
         List<BinarySearchTreeNode<K,V>> list =  new ArrayList<>();
         while (itr.hasNext()) {
             list.add((BinarySearchTreeNode<K, V>) itr.next());
@@ -414,32 +431,81 @@ public class BinarySearchTree<K,V> implements BinaryTree<K,V> {
 
     @Override
     public Iterator<BinaryTreeNode<K,V>> iterator() {
-        return traverser(TraversalType.INORDER); // natural order is default
+        return traverser(TraversalType.INORDER, null); // natural order is default
     }
 
     @Override
-    public Iterator<BinaryTreeNode<K,V>> traverser(TraversalType traversalType) {
+    public Iterator<BinaryTreeNode<K,V>> traverser(TraversalType traversalType, Function<BinaryTreeNode<K,V>,Void> function ) {
         // placeholder
         ArrayDeque<BinaryTreeNode<K,V>> results = new ArrayDeque<>();
         switch (traversalType) {
             case BREADTH: {
-                breadth(root,results);
+                breadth(root,results, function);
                 break;
             }
             case DEPTH:
-                depth(root,results);
+                depth(root,results, function);
                 break;
             case PREORDER: {
-                preorder(root, results);
+                preorder(root, results, function);
                 break;
             }
             case INORDER:
-                inorder(root,results);
+                inorder(root,results, function);
                 break;
             case POSTORDER:
-                postorder(root,results);
+                postorder(root,results, function);
                 break;
         }
         return new BinarySearchTreeIterator<>(results, traversalType);
+    }
+
+    @Override
+    public int nodeCount(BinaryTreeNode<K, V> root) {
+        AtomicInteger counter = new AtomicInteger();
+        Function<BinaryTreeNode<K,V>,Void> node_counter = (node) -> {
+            counter.getAndIncrement();
+            return null;
+        };
+        preorder(root,new ArrayDeque<>(),node_counter);
+        return counter.get();
+    }
+
+    @Override
+    public int leavesCount(BinaryTreeNode<K, V> root) {
+        AtomicInteger counter = new AtomicInteger();
+        Function<BinaryTreeNode<K,V>,Void> leaves_counter = (node) -> {
+          if (node.isLeaf()) {
+              counter.getAndIncrement();
+          }
+          return null;
+        };
+        inorder(root, new ArrayDeque<>(), leaves_counter);
+        return counter.get();
+    }
+
+    @Override
+    public void swapTrees(BinaryTreeNode<K, V> node) {
+        BinarySearchTreeNode<K,V> itr = (BinarySearchTreeNode<K, V>) node;
+        if (!node.isLeaf()) {
+            BinarySearchTreeNode<K,V> temp = itr.left;
+            itr.left = itr.right;
+            itr.right = temp;
+            swapTrees(itr.left);
+            swapTrees(itr.right);
+        }
+    }
+
+    @Override
+    public int singleParent() {
+        Iterator<BinaryTreeNode<K,V>> traverser = traverser(TraversalType.PREORDER, null);
+        int single_parent_count = 0;
+        while (traverser.hasNext()) {
+            BinaryTreeNode<K,V> current = traverser.next();
+            if (current.isSingleParent()) {
+                single_parent_count++;
+            }
+        }
+        return single_parent_count;
     }
 }

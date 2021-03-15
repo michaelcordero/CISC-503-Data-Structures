@@ -45,7 +45,7 @@ public class TestDriver6 {
         bst.put(raeesa.getID(), raeesa);
         bst.put(lisa.getID(), lisa);
         bst.put(erica.getID(), erica);
-        bst.put(maria.getID(), mary);
+        bst.put(mary.getID(), mary);
         bst.put(gwendolyn.getID(), gwendolyn);
         bst.put(paula.getID(), paula);
         bst.values().forEach(System.out::println);
@@ -69,6 +69,26 @@ public class TestDriver6 {
         System.out.println("================================");
         assert bst.containsKey(michael.getID());
         assert !bst.containsKey(22);
+        System.out.println("================================");
+        System.out.println("====  Test node count =======");
+        System.out.println("================================");
+        int nodes_count = bst.nodeCount(bst.root);
+        assert nodes_count == bst.size();
+        System.out.println("Nodes: "+ nodes_count);
+        System.out.println("================================");
+        System.out.println("====  Test leaves count =======");
+        System.out.println("================================");
+        int leaves_count = bst.leavesCount(bst.root);
+        System.out.println("Leaves: "+ leaves_count);
+        System.out.println("================================");
+        System.out.println("====  Test single parent   =====");
+        System.out.println("================================");
+        int single_parent_count = bst.singleParent();
+        System.out.println("Single Parents: " + single_parent_count);
+        System.out.println("================================");
+        System.out.println("====  Test swap trees    =======");
+        System.out.println("================================");
+
 
     }
 }
