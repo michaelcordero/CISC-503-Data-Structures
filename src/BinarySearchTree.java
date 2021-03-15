@@ -88,7 +88,7 @@ public class BinarySearchTree<K,V> implements BinaryTree<K,V> {
     }
 
     private void innerSwap(BinarySearchTreeNode<K,V> node) {
-        if (!node.isLeaf()) {
+        if ( node != null && !node.isLeaf()) {
             BinarySearchTreeNode<K,V> temp = node.left;
             node.left = node.right;
             node.right = temp;
@@ -137,8 +137,12 @@ public class BinarySearchTree<K,V> implements BinaryTree<K,V> {
                     function.apply(node);
                 }
                 // push the children from right to left
-                stack.push(node.right());
-                stack.push(node.left());
+                if (node.right() != null) {
+                    stack.push(node.right());
+                }
+                if (node.left() != null) {
+                    stack.push(node.left());
+                }
             }
         }
     }

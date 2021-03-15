@@ -70,29 +70,55 @@ public class TestDriver6 {
         assert bst.containsKey(michael.getID());
         assert !bst.containsKey(22);
         System.out.println("================================");
-        System.out.println("====  Test node count =======");
+        System.out.println("====  Test Q1: node count ======");
         System.out.println("================================");
         int nodes_count = bst.nodeCount();
         assert nodes_count == bst.size();
         System.out.println("Nodes: "+ nodes_count);
         System.out.println("================================");
-        System.out.println("====  Test leaves count =======");
+        System.out.println("====  Test Q2: leaves count ====");
         System.out.println("================================");
         int leaves_count = bst.leavesCount();
         System.out.println("Leaves: "+ leaves_count);
         System.out.println("================================");
-        System.out.println("====  Test single parent   =====");
+        System.out.println("====  Test Q4: single parent ===");
         System.out.println("================================");
         int single_parent_count = bst.singleParent();
         System.out.println("Single Parents: " + single_parent_count);
         System.out.println("================================");
-        System.out.println("====  TestQuestion 7: ==========");
+        System.out.println("====  Test Q5:        ==========");
+        System.out.println("================================");
+        System.out.println("A.) Is it possible that the preorder" +
+                " traversal visits in the same order as post order traversal?");
+        System.out.println("PREORDER: ");
+        bst.traverser(BinaryTree.TraversalType.PREORDER,(node) -> {
+            System.out.println(node.getValue());
+            return null;
+        });
+        System.out.println("POSTORDER: ");
+        bst.traverser(BinaryTree.TraversalType.POSTORDER,(node) -> {
+            System.out.println(node.getValue());
+            return null;
+        });
+        System.out.println("A.) No, not possible by definition.");
+        System.out.println("B.) Is it possible that the preorder traversal " +
+                "of T visits the nodes in reverse order of the postorder traversal of T?");
+        System.out.println("B.) No, it is also not possible by definition. Preorder in reverse is: Right, Left, Root");
+        System.out.println("Which is not that same as Postorder: Left, right, root. ");
+        System.out.println("Refer to example just printed for proof. It doesn't read the same going backwards.");
+        System.out.println("================================");
+        System.out.println("====  TestQuestion 6: ==========");
+        System.out.println("================================");
+        System.out.println("See Assignment-6.docx");
+        System.out.println("================================");
+        System.out.println("====  Test Q7: nodeHeight ======");
         System.out.println("================================");
         bst.nodeHeight();
         System.out.println("================================");
-        System.out.println("====  Test swap trees    =======");
+        System.out.println("====  Test Q3: swap trees    ===");
         System.out.println("================================");
-
-
+        // saved this until the very end, so is it easier to compare the previous output for correctness.
+        bst.swapTrees();
+        bst.nodeHeight();
     }
 }
