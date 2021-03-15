@@ -252,7 +252,7 @@ public class BinarySearchTree<K,V> implements BinaryTree<K,V> {
     @Override
     public V get(Object key) {
         BinarySearchTreeNode<K,V> itr = root;
-//        int visits = 1;
+//        int visits = 1;  // these visits check are to ensure O(log n) runtime efficiency.
         @SuppressWarnings("unchecked")
         Comparable<? super K> k = (Comparable<? super K>) key;
         while (itr != null) {
