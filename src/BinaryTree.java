@@ -1,8 +1,7 @@
-import java.util.Iterator;
 import java.util.Map;
 import java.util.function.Function;
 
-public interface BinaryTree<K,V> extends Map<K, V>, Iterable<BinaryTree.BinaryTreeNode<K,V>> {
+public interface BinaryTree<K,V> extends Map<K, V> {
     ///////////////////////////////////////////////
     // inner node class
     //////////////////////////////////////////////
@@ -43,15 +42,15 @@ public interface BinaryTree<K,V> extends Map<K, V>, Iterable<BinaryTree.BinaryTr
 //    V min();
 //    V max();
     // Traversals
-    Iterator<BinaryTreeNode<K,V>> traverser(TraversalType traversalType, Function<BinaryTreeNode<K,V>,Void> function);
+<R> void traverser(TraversalType traversalType, Function<BinaryTreeNode<K, V>,R> function);
 
 
     //////////////////////////////////////////////
     // CISC-503 methods
     //////////////////////////////////////////////
-    int nodeCount(BinaryTreeNode<K,V> node);
-    int leavesCount(BinaryTreeNode<K,V> node);
-    void swapTrees(BinaryTreeNode<K,V> node);
+    int nodeCount();
+    int leavesCount();
+    void swapTrees();
     int singleParent();
 //    void valueHeight();
 }

@@ -72,13 +72,13 @@ public class TestDriver6 {
         System.out.println("================================");
         System.out.println("====  Test node count =======");
         System.out.println("================================");
-        int nodes_count = bst.nodeCount(bst.root);
+        int nodes_count = bst.nodeCount();
         assert nodes_count == bst.size();
         System.out.println("Nodes: "+ nodes_count);
         System.out.println("================================");
         System.out.println("====  Test leaves count =======");
         System.out.println("================================");
-        int leaves_count = bst.leavesCount(bst.root);
+        int leaves_count = bst.leavesCount();
         System.out.println("Leaves: "+ leaves_count);
         System.out.println("================================");
         System.out.println("====  Test single parent   =====");
