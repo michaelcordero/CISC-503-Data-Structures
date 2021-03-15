@@ -6,21 +6,9 @@ public class BinarySearchTree<K,V> implements BinaryTree<K,V> {
     // properties
     //////////////////////////////////////////////
     BinarySearchTreeNode<K,V> root;
-    Comparator<? super K> comparator;
 
     public BinarySearchTree() {
         this.root = null;
-        this.comparator = null;
-    }
-
-    public BinarySearchTree(K key, V value) {
-        this.root = new BinarySearchTreeNode<>(key, value);
-        this.comparator = null;
-    }
-
-    public BinarySearchTree(K key, V value, Comparator<? super K> comparator) {
-        this.root = new BinarySearchTreeNode<>(key, value);
-        this.comparator = comparator;
     }
 
     ///////////////////////////////////////////////
@@ -125,36 +113,25 @@ public class BinarySearchTree<K,V> implements BinaryTree<K,V> {
 
     @Override
     public boolean containsValue(Object value) {
-        boolean found = false;
-        BinarySearchTreeNode<K,V> itr = root;
-        @SuppressWarnings("unchecked")
-        Comparable<? super V> v = (Comparable<? super V>) value;
-        while (!found && itr != null) {
-            int comparison = v.compareTo(itr.getValue());
-            if (comparison == 0) {
-                found = true;
-            }
-            if (comparison < 0) {
-                itr = itr.left;
-            } else if (comparison > 0) {
-                itr = itr.right;
-            }
-        }
-        return found;
+        return values().contains(value);
     }
 
     @Override
     public V get(Object key) {
         BinarySearchTreeNode<K,V> itr = root;
+//        int visits = 1;
         @SuppressWarnings("unchecked")
         Comparable<? super K> k = (Comparable<? super K>) key;
         while (itr != null) {
             int comparison = k.compareTo(itr.getKey());
             if (comparison < 0) {
                 itr = itr.left;
+//                visits++;
             } else if (comparison > 0) {
                 itr = itr.right;
+//                visits++;
             } else {
+//                System.out.println("# of visits: " + visits);
                 return itr.getValue();
             }
         }
@@ -398,6 +375,12 @@ public class BinarySearchTree<K,V> implements BinaryTree<K,V> {
         }
     }
 
+    /**
+     * Inspired by OO Data Structures using Java 4th edition Dale, Joyce, & Weems. Page 470.
+     * @param low - starting point index
+     * @param high - end point index
+     * @param list - structure to be indexed
+     */
     private void internalBalance(int low, int high, List<BinarySearchTreeNode<K,V>> list ) {
         if (low == high) {
             BinarySearchTreeNode<K,V> low_node = list.get(low);
