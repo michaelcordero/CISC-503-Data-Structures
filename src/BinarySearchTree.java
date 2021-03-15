@@ -164,11 +164,15 @@ public class BinarySearchTree<K,V> implements BinaryTree<K,V> {
     @Override
     public V put(K key, V value) {
         BinarySearchTreeNode<K,V> node = new BinarySearchTreeNode<>(key,value);
+        if (root == null) {
+            root = node;
+            return root.getValue();
+        }
         boolean inserted = false;
         BinarySearchTreeNode<K,V> itr = root;
         @SuppressWarnings("unchecked")
         Comparable<? super K> k = (Comparable<? super K>) key;
-        while (!inserted) {
+        while (!inserted && itr != null) {
             int comparison = k.compareTo(itr.getKey());
             if (comparison < 0) {
                 if (itr.left() == null) {
@@ -394,11 +398,41 @@ public class BinarySearchTree<K,V> implements BinaryTree<K,V> {
         }
     }
 
+    private void internalBalance(int low, int high, List<BinarySearchTreeNode<K,V>> list ) {
+        if (low == high) {
+            BinarySearchTreeNode<K,V> low_node = list.get(low);
+            this.put(low_node.getKey(),low_node.getValue());
+        }
+        else if ((low + 1) == high) {
+            BinarySearchTreeNode<K,V> low_node = list.get(low);
+            BinarySearchTreeNode<K,V> high_node = list.get(high);
+            this.put(low_node.getKey(),low_node.getValue());
+            this.put(high_node.getKey(), high_node.getValue());
+        }
+        else {
+            int mid = (low + high) / 2;
+            BinarySearchTreeNode<K,V> mid_node = list.get(mid);
+            this.put(mid_node.getKey(), mid_node.getValue());
+            internalBalance(low, mid - 1, list);
+            internalBalance(mid + 1, high, list);
+        }
+    }
+
+    @Override
+    public void balance() {
+        Iterator<BinaryTreeNode<K,V>> itr = traverser(TraversalType.INORDER);
+        List<BinarySearchTreeNode<K,V>> list =  new ArrayList<>();
+        while (itr.hasNext()) {
+            list.add((BinarySearchTreeNode<K, V>) itr.next());
+        }
+        this.root = null;
+        internalBalance(0, list.size() - 1, list);
+    }
+
     @Override
     public Iterator<BinaryTreeNode<K,V>> iterator() {
         return traverser(TraversalType.INORDER); // natural order is default
     }
-
 
     @Override
     public Iterator<BinaryTreeNode<K,V>> traverser(TraversalType traversalType) {

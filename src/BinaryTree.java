@@ -5,7 +5,7 @@ public interface BinaryTree<K,V> extends Map<K, V>, Iterable<BinaryTree.BinaryTr
     ///////////////////////////////////////////////
     // inner node class
     //////////////////////////////////////////////
-    interface BinaryTreeNode<K,V> extends Entry<K, V> {
+    interface BinaryTreeNode<K,V> extends Map.Entry<K, V> {
         // dutiful methods
         BinaryTreeNode<K,V> parent();
         BinaryTreeNode<K,V> left();
@@ -34,12 +34,9 @@ public interface BinaryTree<K,V> extends Map<K, V>, Iterable<BinaryTree.BinaryTr
     ///////////////////////////////////////////////
     // definition methods
     ///////////////////////////////////////////////
-    // operations if you don't want to override Map
-    // but first try to extend AbstractMap in the BST implementation
-    // put, get, contains, remove, isFull, isEmpty, size,
 
     // data queries
-//    void balance();
+    void balance();
 //    int level(BinaryTreeNode<K,V> node);
 //    int height(BinaryTreeNode<K,V> node);
 //    V min();
