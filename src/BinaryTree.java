@@ -47,9 +47,8 @@ public interface BinaryTree<K, V> extends Map<K, V> {
     void balance();
     //    int level(BinaryTreeNode<K,V> node);
     int height();
-
-    //    V min();
-//    V max();
+    V min();
+    V max();
     void traverser(TraversalType traversalType, Consumer<BinaryTreeNode<K, V>> function);
 
 
