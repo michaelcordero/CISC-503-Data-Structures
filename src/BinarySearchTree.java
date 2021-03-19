@@ -379,21 +379,21 @@ public class BinarySearchTree<K,V> implements BinaryTree<K,V> {
     @Override
     public Set<K> keySet() {
         Set<K> keys = new HashSet<>();
-        traverser(TraversalType.PREORDER, (node) -> keys.add(node.getKey()));
+        traverser(TraversalType.BREADTH, (node) -> keys.add(node.getKey()));
         return keys;
     }
 
     @Override
     public Collection<V> values() {
         Collection<V> values = new ArrayList<>();
-        traverser(TraversalType.PREORDER, (node) -> values.add(node.getValue()) );
+        traverser(TraversalType.BREADTH, (node) -> values.add(node.getValue()) );
         return values;
     }
 
     @Override
     public Set<Entry<K, V>> entrySet() {
         Set<Entry<K,V>> entries = new HashSet<>();
-        traverser(TraversalType.PREORDER, (node) -> entries.add(new Map.Entry<K, V>() {
+        traverser(TraversalType.BREADTH, (node) -> entries.add(new Map.Entry<K, V>() {
             @Override
             public K getKey() {
                 return node.getKey();
