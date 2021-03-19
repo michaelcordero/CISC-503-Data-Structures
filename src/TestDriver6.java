@@ -78,6 +78,14 @@ public class TestDriver6 {
         // bst.remove(tavi.getID()); // test root
         bst.values().forEach(System.out::println);
         System.out.println("================================");
+        System.out.println("=========  Test min   ==========");
+        System.out.println("================================");
+        assert 1 == bst.min().getID();
+        System.out.println("================================");
+        System.out.println("=========  Test max   ==========");
+        System.out.println("================================");
+        assert 17 == bst.max().getID();
+        System.out.println("================================");
         System.out.println("====  Test Q1: node count ======");
         System.out.println("================================");
         int nodes_count = bst.nodeCount();

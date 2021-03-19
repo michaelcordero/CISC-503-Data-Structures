@@ -439,6 +439,24 @@ public class BinarySearchTree<K,V> implements BinaryTree<K,V> {
         return innerHeight(root);
     }
 
+    @Override
+    public V min() {
+        BinaryTreeNode<K,V> itr = root;
+        while (itr.left() != null) {
+            itr = itr.left();
+        }
+        return itr.getValue();
+    }
+
+    @Override
+    public V max() {
+        BinaryTreeNode<K,V> itr = root;
+        while (itr.right() != null) {
+            itr = itr.right();
+        }
+        return itr.getValue();
+    }
+
     /**
      * This solution basically makes use of the fact that since we are traversing the Tree anyway, we might as well
      * perform the operation at that time. The textbook's solution wastes time & space. When creating a reusable
