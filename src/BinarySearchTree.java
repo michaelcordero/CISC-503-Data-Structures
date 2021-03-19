@@ -309,8 +309,8 @@ public class BinarySearchTree<K,V> implements BinaryTree<K,V> {
                     itr = itr.right;
                 }
             } else {
-                // duplicate value. the text says enter it to the left, but not sure if want that.
-                // have to change inserted to true to avoid infinite loop.
+                // keep key, overwrite value
+                itr.value = node.getValue();
                 inserted = true;
             }
         }
@@ -494,7 +494,7 @@ public class BinarySearchTree<K,V> implements BinaryTree<K,V> {
     @Override
     public int singleParent() {
         AtomicInteger single_parent_count = new AtomicInteger();
-        traverser(TraversalType.PREORDER, (node) -> {
+        traverser(TraversalType.POSTORDER, (node) -> {
             if (node.isSingleParent()) single_parent_count.getAndIncrement();
         });
         return single_parent_count.get();

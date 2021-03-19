@@ -26,7 +26,7 @@ public class TestDriver6 {
         Student mary = new Student(15, "mary", "accounting");
         Student gwendolyn = new Student(16, "gwendolyn", "entrepreneurship");
         Student paula = new Student(17, "paula", "biomechanical engineering");
-
+        Student svetlana = new Student(18, "svetlana", "linguistics");
         System.out.println("================================");
         System.out.println("==== Test put ==================");
         System.out.println("================================");
@@ -48,6 +48,8 @@ public class TestDriver6 {
         bst.put(mary.getID(), mary);
         bst.put(gwendolyn.getID(), gwendolyn);
         bst.put(paula.getID(), paula);
+        bst.put(svetlana.getID(), svetlana);
+        bst.put(18, new Student(18, "ilyena", "physics")); // test map overwrite
         bst.values().forEach(System.out::println);
         System.out.println();
         System.out.println("================================");
@@ -72,7 +74,7 @@ public class TestDriver6 {
         System.out.println("================================");
         System.out.println("====  Test remove =======");
         System.out.println("================================");
-        bst.remove(paula.getID());
+        bst.remove(svetlana.getID());
         // bst.remove(tavi.getID()); // test root
         bst.values().forEach(System.out::println);
         System.out.println("================================");
