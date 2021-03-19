@@ -70,6 +70,12 @@ public class TestDriver6 {
         assert bst.containsKey(michael.getID());
         assert !bst.containsKey(22);
         System.out.println("================================");
+        System.out.println("====  Test remove =======");
+        System.out.println("================================");
+        bst.remove(paula.getID());
+        // bst.remove(tavi.getID()); // test root
+        bst.values().forEach(System.out::println);
+        System.out.println("================================");
         System.out.println("====  Test Q1: node count ======");
         System.out.println("================================");
         int nodes_count = bst.nodeCount();
@@ -91,15 +97,9 @@ public class TestDriver6 {
         System.out.println("A.) Is it possible that the preorder" +
                 " traversal visits in the same order as post order traversal?");
         System.out.println("PREORDER: ");
-        bst.traverser(BinaryTree.TraversalType.PREORDER,(node) -> {
-            System.out.println(node.getValue());
-            return null;
-        });
+        bst.traverser(BinaryTree.TraversalType.PREORDER,(node) -> System.out.println(node.getValue()));
         System.out.println("POSTORDER: ");
-        bst.traverser(BinaryTree.TraversalType.POSTORDER,(node) -> {
-            System.out.println(node.getValue());
-            return null;
-        });
+        bst.traverser(BinaryTree.TraversalType.POSTORDER,(node) -> System.out.println(node.getValue()));
         System.out.println("A.) No, not possible by definition.");
         System.out.println("B.) Is it possible that the preorder traversal " +
                 "of T visits the nodes in reverse order of the postorder traversal of T?");

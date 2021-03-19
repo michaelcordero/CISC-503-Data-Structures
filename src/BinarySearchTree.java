@@ -2,8 +2,18 @@ import java.util.*;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Function;
+import java.util.function.Consumer;
 
+/**
+ * This Binary Search Tree implementation ensures O(log n) runtime efficiency for most of the common operations
+ * associated with trees. Binary Search Trees can be implemented as sets or maps, but to resolve any ambiguity on
+ * the order of the objects to be contained therein, the key-value setup was chosen.
+ * Clients of this class have the traverser method available at their disposal, which should handle most needs.
+ * Since: 3/18/2021
+ * Author: Michael Cordero
+ * @param <K> - The type of keys
+ * @param <V> - The type of values
+ */
 public class BinarySearchTree<K,V> implements BinaryTree<K,V> {
     ///////////////////////////////////////////////
     // properties
@@ -105,15 +115,15 @@ public class BinarySearchTree<K,V> implements BinaryTree<K,V> {
         }
     }
 
-    private <R> void breadth(BinaryTreeNode<K,V> node, Function<BinaryTreeNode<K,V>,R> function) {
+    private void breadth(BinaryTreeNode<K,V> node, Consumer<BinaryTreeNode<K,V>> consumer) {
         Queue<BinaryTreeNode<K,V>> queue = new LinkedBlockingQueue<>();
         if (node != null) {
             queue.add(node);
             while (!queue.isEmpty()) {
                 node = queue.poll();
                 // visit the node, i.e. perform the operation
-                if (function != null) {
-                    function.apply(node);
+                if (consumer != null) {
+                    consumer.accept(node);
                 }
                 // enqueue the children from left to right
                 if (node.left() != null) {
@@ -126,15 +136,15 @@ public class BinarySearchTree<K,V> implements BinaryTree<K,V> {
         }
     }
 
-    private <R> void depth(BinaryTreeNode<K,V> node, Function<BinaryTreeNode<K,V>,R> function) {
+    private void depth(BinaryTreeNode<K,V> node, Consumer<BinaryTreeNode<K,V>> consumer) {
         Stack<BinaryTreeNode<K,V>> stack = new Stack<>();
         if (node != null) {
             stack.push(node);
             while (!stack.empty()) {
                 node = stack.pop();
                 // visit the node, i.e. perform the operation
-                if (function != null) {
-                    function.apply(node);
+                if (consumer != null) {
+                    consumer.accept(node);
                 }
                 // push the children from right to left
                 if (node.right() != null) {
@@ -147,35 +157,35 @@ public class BinarySearchTree<K,V> implements BinaryTree<K,V> {
         }
     }
 
-    private <R> void preorder(BinaryTreeNode<K,V> node, Function<BinaryTreeNode<K,V>,R> function) {
+    private void preorder(BinaryTreeNode<K,V> node, Consumer<BinaryTreeNode<K,V>> consumer) {
         // Root. Left. Right.
         if (node != null) {
-            if (function != null) {
-                function.apply(node);
+            if (consumer != null) {
+                consumer.accept(node);
             }
-            preorder(node.left(), function);
-            preorder(node.right(), function);
+            preorder(node.left(), consumer);
+            preorder(node.right(), consumer);
         }
     }
 
-    private <R> void inorder(BinaryTreeNode<K,V> node, Function<BinaryTreeNode<K,V>,R> function) {
+    private void inorder(BinaryTreeNode<K,V> node, Consumer<BinaryTreeNode<K,V>> consumer) {
         // Left. Root. Right.
         if (node != null) {
-            inorder(node.left(),function);
-            if (function != null) {
-                function.apply(node);
+            inorder(node.left(),consumer);
+            if (consumer != null) {
+                consumer.accept(node);
             }
-            inorder(node.right(),function);
+            inorder(node.right(),consumer);
         }
     }
 
-    private <R> void postorder(BinaryTreeNode<K,V> node, Function<BinaryTreeNode<K,V>,R> function) {
+    private void postorder(BinaryTreeNode<K,V> node, Consumer<BinaryTreeNode<K,V>> consumer) {
         // Left. Right. Root.
         if (node != null) {
-            postorder(node.left(),function);
-            postorder(node.right(),function);
-            if (function != null) {
-                function.apply(node);
+            postorder(node.left(),consumer);
+            postorder(node.right(),consumer);
+            if (consumer != null) {
+                consumer.accept(node);
             }
         }
     }
@@ -244,7 +254,6 @@ public class BinarySearchTree<K,V> implements BinaryTree<K,V> {
         AtomicBoolean found = new AtomicBoolean(false);
         traverser(TraversalType.PREORDER, (node) -> {
             if (node.getValue() == value) found.set(true);
-            return null;
         });
         return found.get();
     }
@@ -325,21 +334,30 @@ public class BinarySearchTree<K,V> implements BinaryTree<K,V> {
             // key object found
             else {
                 found = true;
-                BinarySearchTreeNode<K,V> parent = itr.parent;
-                BinarySearchTreeNode<K,V> left = itr.left;
-                BinarySearchTreeNode<K,V> right = itr.right;
-                // re-attaching the child nodes to the node to be removed's parent.
-                if (right != null) {
-                    if (itr == parent.left) {
-                        parent.left = right;
-                    } else {
-                        parent.right = right;
-                    }
+                // special case for root
+                if (itr.isRoot()) {
+                    List<BinarySearchTreeNode<K,V>> list =  new ArrayList<>();
+                    traverser(TraversalType.INORDER, (node) -> list.add((BinarySearchTreeNode<K, V>) node));
+                    list.remove(root);
+                    this.root = null;
+                    internalBalance(0, list.size() - 1, list);
                 } else {
-                    if (itr == parent.right) {
-                        parent.right = left;
+                    BinarySearchTreeNode<K,V> parent = itr.parent;
+                    BinarySearchTreeNode<K,V> left = itr.left;
+                    BinarySearchTreeNode<K,V> right = itr.right;
+                    // re-attaching the child nodes to the node to be removed parent.
+                    if (right != null) {
+                        if (itr == parent.left) {
+                            parent.left = right;
+                        } else {
+                            parent.right = right;
+                        }
                     } else {
-                        parent.left = left;
+                        if (itr == parent.right) {
+                            parent.right = left;
+                        } else {
+                            parent.left = left;
+                        }
                     }
                 }
             }
@@ -406,10 +424,7 @@ public class BinarySearchTree<K,V> implements BinaryTree<K,V> {
     @Override
     public void balance() {
         List<BinarySearchTreeNode<K,V>> list =  new ArrayList<>();
-        traverser(TraversalType.INORDER, (node) -> {
-            list.add((BinarySearchTreeNode<K, V>) node);
-            return null;
-        });
+        traverser(TraversalType.INORDER, (node) -> list.add((BinarySearchTreeNode<K, V>) node));
         this.root = null;
         internalBalance(0, list.size() - 1, list);
     }
@@ -430,30 +445,28 @@ public class BinarySearchTree<K,V> implements BinaryTree<K,V> {
      * perform the operation at that time. The textbook's solution wastes time & space. When creating a reusable
      * iterator, it has to traverse the elements, then store the elements in a data structure. Effectively doubling the
      * memory footprint.
-     * @param traversalType - Consumer's choice
-     * @param function - The function to be executed when a node is visited with respect to order.
-     * @param <R> - Function's return type.
+     * @param traversalType - The client gets to choose what type of traversal order they want.
+     * @param consumer - The consumer function to be executed when a node is visited with respect to order.
      */
     @Override
-    public <R> void traverser(TraversalType traversalType, Function<BinaryTreeNode<K, V>,R> function ) {
-        // placeholder
+    public void traverser(TraversalType traversalType, Consumer<BinaryTreeNode<K, V>> consumer ) {
         switch (traversalType) {
             case BREADTH: {
-                breadth(root,function);
+                breadth(root,consumer);
                 break;
             }
             case DEPTH:
-                depth(root,function);
+                depth(root,consumer);
                 break;
             case PREORDER: {
-                preorder(root, function);
+                preorder(root, consumer);
                 break;
             }
             case INORDER:
-                inorder(root,function);
+                inorder(root,consumer);
                 break;
             case POSTORDER:
-                postorder(root,function);
+                postorder(root,consumer);
                 break;
         }
     }
@@ -461,11 +474,7 @@ public class BinarySearchTree<K,V> implements BinaryTree<K,V> {
     @Override
     public int nodeCount() {
         AtomicInteger counter = new AtomicInteger();
-        Function<BinaryTreeNode<K,V>,Void> node_counter = (node) -> {
-            counter.getAndIncrement();
-            return null;
-        };
-        traverser(TraversalType.PREORDER, node_counter);
+        traverser(TraversalType.PREORDER, (node) -> counter.getAndIncrement());
         return counter.get();
     }
 
@@ -473,10 +482,7 @@ public class BinarySearchTree<K,V> implements BinaryTree<K,V> {
     public int leavesCount() {
         AtomicInteger counter = new AtomicInteger();
         traverser(TraversalType.PREORDER, (node) -> {
-         if (node.isLeaf()) {
-             counter.getAndIncrement();
-         }
-         return null;
+         if (node.isLeaf()) counter.getAndIncrement();
         });
         return counter.get();
     }
@@ -491,7 +497,6 @@ public class BinarySearchTree<K,V> implements BinaryTree<K,V> {
         AtomicInteger single_parent_count = new AtomicInteger();
         traverser(TraversalType.PREORDER, (node) -> {
             if (node.isSingleParent()) single_parent_count.getAndIncrement();
-            return null;
         });
         return single_parent_count.get();
     }
@@ -509,7 +514,6 @@ public class BinarySearchTree<K,V> implements BinaryTree<K,V> {
             System.out.print("Element: " + element + " Height: " + height);
 //            parent.ifPresent(kvBinaryTreeNode -> System.out.print(" Parent " + kvBinaryTreeNode.getValue().toString()));
             System.out.println();
-            return null;
         });
     }
 }
