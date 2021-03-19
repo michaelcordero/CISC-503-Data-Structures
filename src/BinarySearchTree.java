@@ -36,7 +36,6 @@ public class BinarySearchTree<K,V> implements BinaryTree<K,V> {
         ////////////////////////////////////////////
         K key;
         V value;
-        // ain't nobody got time for that setter() ish! haha
         protected BinarySearchTreeNode<K,V> parent;
         protected BinarySearchTreeNode<K,V> left;
         protected BinarySearchTreeNode<K,V> right;
