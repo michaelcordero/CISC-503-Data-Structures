@@ -1,5 +1,5 @@
 import java.util.Map;
-import java.util.function.Function;
+import java.util.function.Consumer;
 
 public interface BinaryTree<K, V> extends Map<K, V> {
     ///////////////////////////////////////////////
@@ -44,16 +44,11 @@ public interface BinaryTree<K, V> extends Map<K, V> {
     ///////////////////////////////////////////////
     // definition methods
     ///////////////////////////////////////////////
-
-    // data queries
     void balance();
-
-    //    int level(BinaryTreeNode<K,V> node);
     int height();
-
-    //    V min();
-//    V max();
-    <R> void traverser(TraversalType traversalType, Function<BinaryTreeNode<K, V>, R> function);
+    V min();
+    V max();
+    void traverser(TraversalType traversalType, Consumer<BinaryTreeNode<K, V>> function);
 
 
     //////////////////////////////////////////////

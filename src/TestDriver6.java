@@ -26,7 +26,7 @@ public class TestDriver6 {
         Student mary = new Student(15, "mary", "accounting");
         Student gwendolyn = new Student(16, "gwendolyn", "entrepreneurship");
         Student paula = new Student(17, "paula", "biomechanical engineering");
-
+        Student svetlana = new Student(18, "svetlana", "linguistics");
         System.out.println("================================");
         System.out.println("==== Test put ==================");
         System.out.println("================================");
@@ -48,6 +48,8 @@ public class TestDriver6 {
         bst.put(mary.getID(), mary);
         bst.put(gwendolyn.getID(), gwendolyn);
         bst.put(paula.getID(), paula);
+        bst.put(svetlana.getID(), svetlana);
+        bst.put(18, new Student(18, "ilyena", "physics")); // test map overwrite
         bst.values().forEach(System.out::println);
         System.out.println();
         System.out.println("================================");
@@ -70,6 +72,20 @@ public class TestDriver6 {
         assert bst.containsKey(michael.getID());
         assert !bst.containsKey(22);
         System.out.println("================================");
+        System.out.println("====  Test remove =======");
+        System.out.println("================================");
+        bst.remove(svetlana.getID());
+        // bst.remove(tavi.getID()); // test root
+        bst.values().forEach(System.out::println);
+        System.out.println("================================");
+        System.out.println("=========  Test min   ==========");
+        System.out.println("================================");
+        assert 1 == bst.min().getID();
+        System.out.println("================================");
+        System.out.println("=========  Test max   ==========");
+        System.out.println("================================");
+        assert 17 == bst.max().getID();
+        System.out.println("================================");
         System.out.println("====  Test Q1: node count ======");
         System.out.println("================================");
         int nodes_count = bst.nodeCount();
@@ -91,15 +107,9 @@ public class TestDriver6 {
         System.out.println("A.) Is it possible that the preorder" +
                 " traversal visits in the same order as post order traversal?");
         System.out.println("PREORDER: ");
-        bst.traverser(BinaryTree.TraversalType.PREORDER,(node) -> {
-            System.out.println(node.getValue());
-            return null;
-        });
+        bst.traverser(BinaryTree.TraversalType.PREORDER,(node) -> System.out.println(node.getValue()));
         System.out.println("POSTORDER: ");
-        bst.traverser(BinaryTree.TraversalType.POSTORDER,(node) -> {
-            System.out.println(node.getValue());
-            return null;
-        });
+        bst.traverser(BinaryTree.TraversalType.POSTORDER,(node) -> System.out.println(node.getValue()));
         System.out.println("A.) No, not possible by definition.");
         System.out.println("B.) Is it possible that the preorder traversal " +
                 "of T visits the nodes in reverse order of the postorder traversal of T?");
