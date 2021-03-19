@@ -30,7 +30,7 @@ public class BinarySearchTree<K,V> implements BinaryTree<K,V> {
     ///////////////////////////////////////////////
     // inner node class
     //////////////////////////////////////////////
-    static class BinarySearchTreeNode<K,V> implements BinaryTreeNode<K,V> {
+    private static class BinarySearchTreeNode<K,V> implements BinaryTreeNode<K,V> {
         /////////////////////////////////////////////
         // Properties
         ////////////////////////////////////////////
@@ -46,7 +46,6 @@ public class BinarySearchTree<K,V> implements BinaryTree<K,V> {
         BinarySearchTreeNode(K key, V value) {
             this.key = key;
             this.value = value;
-            // outer class's put() takes care of linking the new node.
             this.left = null;
             this.right = null;
             this.parent = null;
@@ -461,7 +460,7 @@ public class BinarySearchTree<K,V> implements BinaryTree<K,V> {
      * This solution basically makes use of the fact that since we are traversing the Tree anyway, we might as well
      * perform the operation at that time. The textbook's solution wastes time & space. When creating a reusable
      * iterator, it has to traverse the elements, then store the elements in a data structure. Effectively doubling the
-     * memory footprint.
+     * memory footprint and time cost.
      * @param traversalType - The client gets to choose what type of traversal order they want.
      * @param consumer - The consumer function to be executed when a node is visited with respect to order.
      */

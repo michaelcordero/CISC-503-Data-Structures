@@ -45,7 +45,6 @@ public interface BinaryTree<K, V> extends Map<K, V> {
     // definition methods
     ///////////////////////////////////////////////
     void balance();
-    //    int level(BinaryTreeNode<K,V> node);
     int height();
     V min();
     V max();
