@@ -287,6 +287,7 @@ public class BinarySearchTree<K,V> implements BinaryTree<K,V> {
         }
         boolean inserted = false;
         BinarySearchTreeNode<K,V> itr = root;
+        V previous = null;
         @SuppressWarnings("unchecked")
         Comparable<? super K> k = (Comparable<? super K>) key;
         while (!inserted && itr != null) {
@@ -308,12 +309,12 @@ public class BinarySearchTree<K,V> implements BinaryTree<K,V> {
                     itr = itr.right;
                 }
             } else {
-                // keep key, overwrite value
-                itr.value = node.getValue();
+                // keep key, overwrite previous value
+                previous = itr.setValue(node.getValue());
                 inserted = true;
             }
         }
-        return node.getValue();
+        return previous;
     }
 
     @Override
