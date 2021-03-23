@@ -379,21 +379,21 @@ public class BinarySearchTree<K,V> implements BinaryTree<K,V> {
     @Override
     public Set<K> keySet() {
         Set<K> keys = new HashSet<>();
-        traverser(TraversalType.BREADTH, (node) -> keys.add(node.getKey()));
+        traverser(TraversalType.INORDER, (node) -> keys.add(node.getKey()));
         return keys;
     }
 
     @Override
     public Collection<V> values() {
         Collection<V> values = new ArrayList<>();
-        traverser(TraversalType.BREADTH, (node) -> values.add(node.getValue()) );
+        traverser(TraversalType.INORDER, (node) -> values.add(node.getValue()) );
         return values;
     }
 
     @Override
     public Set<Entry<K, V>> entrySet() {
         Set<Entry<K,V>> entries = new HashSet<>();
-        traverser(TraversalType.BREADTH, (node) -> entries.add(new Map.Entry<K, V>() {
+        traverser(TraversalType.INORDER, (node) -> entries.add(new Map.Entry<K, V>() {
             @Override
             public K getKey() {
                 return node.getKey();
@@ -567,7 +567,7 @@ public class BinarySearchTree<K,V> implements BinaryTree<K,V> {
         AtomicBoolean includeKey = new AtomicBoolean(false);
         @SuppressWarnings("unchecked")
         Comparable<? super K> comparable = (Comparable<? super K>) key;
-        traverser(TraversalType.BREADTH, node -> {
+        traverser(TraversalType.PREORDER, node -> {
             if (comparable.compareTo(node.getKey()) < 0) {
                 greater.put(node.getKey(), node.getValue());
             } else if (comparable.compareTo(node.getKey()) > 0) {
