@@ -189,6 +189,50 @@ public class BinarySearchTree<K,V> implements BinaryTree<K,V> {
     }
 
     /**
+     * This method exists because there was a requirement that A. recursion be used and B. that we should avoid
+     * traversing down nodes that could not be within range of the upper and lower bounds.
+     * @param values - a queue is being used to maintain the inorder traversal in which nodes were visited.
+     * @param node - the currently being iterated node
+     * @param lesser - the lower bound key
+     * @param greater - the upper bound key
+     */
+    private void innerDisplayItemsInRange(Queue<BinaryTreeNode<K, V>> values, BinaryTreeNode<K,V> node, K lesser, K greater) {
+        if (node != null) {
+            // Visit left child
+            if (node.left() != null ){
+                @SuppressWarnings("unchecked")
+                Comparable<? super K> comparable_left = (Comparable<? super K>) node.left().getKey();
+                int lower_left = comparable_left.compareTo(lesser);
+                int upper_left = comparable_left.compareTo(greater);
+                if ( lower_left > 0 && upper_left < 0) {
+                    innerDisplayItemsInRange(values, node.left(), lesser, greater);
+                }
+            }
+            // Visit Root
+            @SuppressWarnings("unchecked")
+            Comparable<? super K> comparable = (Comparable<? super K>) node.getKey();
+            int lower = comparable.compareTo(lesser);
+            int upper = comparable.compareTo(greater);
+            if ( lower > 0 && upper < 0) {
+                values.add(node);
+            }
+            // Visit right child
+            if (node.right() != null) {
+                @SuppressWarnings("unchecked")
+                Comparable<? super K> comparable_right = (Comparable<? super K>) node.right().getKey();
+                int lower_right = comparable_right.compareTo(lesser);
+                int upper_right = comparable_right.compareTo(greater);
+                if ( lower_right > 0 && upper_right < 0) {
+                    innerDisplayItemsInRange(values, node.right(), lesser, greater);
+                }
+            }
+            while (!values.isEmpty()) {
+                System.out.println(values.poll().getValue());
+            }
+        }
+    }
+
+    /**
      * Inspired by OO Data Structures using Java 4th edition Dale, Joyce, & Weems. Page 470.
      * @param low - starting point index
      * @param high - end point index
@@ -421,6 +465,19 @@ public class BinarySearchTree<K,V> implements BinaryTree<K,V> {
     //////////////////////////////////////////////
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        BinarySearchTree<?, ?> that = (BinarySearchTree<?, ?>) o;
+        return Objects.equals(root, that.root);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(root);
+    }
+
+    @Override
     public void balance() {
         List<BinarySearchTreeNode<K,V>> list =  new ArrayList<>();
         traverser(TraversalType.INORDER, (node) -> list.add((BinarySearchTreeNode<K, V>) node));
@@ -532,5 +589,28 @@ public class BinarySearchTree<K,V> implements BinaryTree<K,V> {
 //            parent.ifPresent(kvBinaryTreeNode -> System.out.print(" Parent " + kvBinaryTreeNode.getValue().toString()));
             System.out.println();
         });
+    }
+
+    @Override
+    public void displayItemsInRange(K lower, K upper) {
+        innerDisplayItemsInRange(new LinkedBlockingQueue<>(), this.root, lower, upper);
+    }
+
+    @Override
+    public K split(K key, BinaryTree<K,V> lesser, BinaryTree<K,V> greater) {
+        AtomicBoolean includeKey = new AtomicBoolean(false);
+        @SuppressWarnings("unchecked")
+        Comparable<? super K> comparable = (Comparable<? super K>) key;
+        traverser(TraversalType.BREADTH, node -> {
+            if (comparable.compareTo(node.getKey()) < 0) {
+                greater.put(node.getKey(), node.getValue());
+            } else if (comparable.compareTo(node.getKey()) > 0) {
+                lesser.put(node.getKey(), node.getValue());
+            } else {
+                includeKey.set(true);
+            }
+        });
+        clear();
+        return includeKey.get() ? key : null;
     }
 }

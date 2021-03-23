@@ -52,15 +52,17 @@ public interface BinaryTree<K, V> extends Map<K, V> {
 
 
     //////////////////////////////////////////////
-    // CISC-503 methods
+    // CISC-503 assignment-6 methods
     //////////////////////////////////////////////
     int nodeCount();
-
     int leavesCount();
-
     void swapTrees();
-
     int singleParent();
-
     void nodeHeight();
+    //////////////////////////////////////////////
+    // CISC-503 assignment-7 methods
+    //////////////////////////////////////////////
+    //void displayItemsInRange(K lesser, K greater);
+    void displayItemsInRange(K lesser, K greater);
+    K split(K theKey, BinaryTree<K,V> lesser, BinaryTree<K,V> greater);
 }
