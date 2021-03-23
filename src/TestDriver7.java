@@ -5,7 +5,6 @@ public class TestDriver7 {
         System.out.println("===================    BinarySearchTree         ===============");
         System.out.println("===============================================================");
         System.out.println();
-
         System.out.println("===============================================================");
         System.out.println("===========    Initialize BinarySearchTree           ==========");
         System.out.println("===============================================================");
