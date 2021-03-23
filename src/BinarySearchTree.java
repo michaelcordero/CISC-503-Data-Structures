@@ -189,50 +189,6 @@ public class BinarySearchTree<K,V> implements BinaryTree<K,V> {
     }
 
     /**
-     * This method exists because there was a requirement that A. recursion be used and B. that we should avoid
-     * traversing down nodes that could not be within range of the upper and lower bounds.
-     * @param values - a queue is being used to maintain the inorder traversal in which nodes were visited.
-     * @param node - the currently being iterated node
-     * @param lesser - the lower bound key
-     * @param greater - the upper bound key
-     */
-    private void innerDisplayItemsInRange(Queue<BinaryTreeNode<K, V>> values, BinaryTreeNode<K,V> node, K lesser, K greater) {
-        if (node != null) {
-            // Visit left child
-            if (node.left() != null ){
-                @SuppressWarnings("unchecked")
-                Comparable<? super K> comparable_left = (Comparable<? super K>) node.left().getKey();
-                int lower_left = comparable_left.compareTo(lesser);
-                int upper_left = comparable_left.compareTo(greater);
-                if ( lower_left > 0 && upper_left < 0) {
-                    innerDisplayItemsInRange(values, node.left(), lesser, greater);
-                }
-            }
-            // Visit Root
-            @SuppressWarnings("unchecked")
-            Comparable<? super K> comparable = (Comparable<? super K>) node.getKey();
-            int lower = comparable.compareTo(lesser);
-            int upper = comparable.compareTo(greater);
-            if ( lower > 0 && upper < 0) {
-                values.add(node);
-            }
-            // Visit right child
-            if (node.right() != null) {
-                @SuppressWarnings("unchecked")
-                Comparable<? super K> comparable_right = (Comparable<? super K>) node.right().getKey();
-                int lower_right = comparable_right.compareTo(lesser);
-                int upper_right = comparable_right.compareTo(greater);
-                if ( lower_right > 0 && upper_right < 0) {
-                    innerDisplayItemsInRange(values, node.right(), lesser, greater);
-                }
-            }
-            while (!values.isEmpty()) {
-                System.out.println(values.poll().getValue());
-            }
-        }
-    }
-
-    /**
      * Inspired by OO Data Structures using Java 4th edition Dale, Joyce, & Weems. Page 470.
      * @param low - starting point index
      * @param high - end point index
@@ -593,7 +549,17 @@ public class BinarySearchTree<K,V> implements BinaryTree<K,V> {
 
     @Override
     public void displayItemsInRange(K lower, K upper) {
-        innerDisplayItemsInRange(new LinkedBlockingQueue<>(), this.root, lower, upper);
+        List<BinaryTreeNode<K,V>> values = new ArrayList<>();
+        traverser(TraversalType.INORDER, node -> {
+            @SuppressWarnings("unchecked")
+            Comparable<? super K> comparable = (Comparable<? super K>) node.getKey();
+            int lesser = comparable.compareTo(lower);
+            int greater = comparable.compareTo(upper);
+            if ( lesser > 0 && greater < 0) {
+                values.add(node);
+            }
+        });
+        values.stream().map(BinaryTreeNode::getValue).forEach(System.out::println);
     }
 
     @Override
