@@ -214,6 +214,53 @@ public class BinarySearchTree<K,V> implements BinaryTree<K,V> {
         }
     }
 
+    /**
+     * Extend the class BinarySearchTree by adding a public method displayItemsInRange (l, w) that outputs in ascending
+     * order of node value, all the nodes in a BST whose values, v lie in the range l < v < w . Use recursion and avoid
+     * entering any subtrees that can't contain any elements in the desired range. You must also write a test program
+     * that builds a BST and tests your method (see below).
+     *
+     * Requirement #1: elements to be printed must fall within the range. l < v < w.
+     * Requirement #2: output elements in ascending order.
+     * Requirement #3: use recursion.
+     * Requirement #4: avoid entering subtrees that can't contain elements in the desired range.
+     *
+     * Solution #1: Range check before an item is printed.
+     * Solution #2: Inorder traversal satisfies the ascending order requirement.
+     * Solution #3: This inner method accepts a BinaryTreeNode as an argument, with each successive call,
+     * it visits that node.
+     * Solution #4: Lower bounds checking occurs before traversal into the left subtree. Upper bounds checking
+     * before entering nodes of the right subtree.
+     *
+     * @param node  - currently being traversed node, root is expected to be passed in first.
+     * @param lower - represents the lower limit of the range
+     * @param upper - represents the upper limit of the range
+     */
+    private void innerDisplayItemsInRange(BinaryTreeNode<K,V> node, K lower, K upper ) {
+        // comparators have to be re-computed for each node's key
+        if (node != null) {
+        @SuppressWarnings("unchecked")
+        Comparable<? super K> currentKey = (Comparable<? super K>) node.getKey();
+        int lessThan = currentKey.compareTo(lower);
+        int greaterThan = currentKey.compareTo(upper);
+            // check left, but first answer the question: Is this currentKey less than the lower bound?
+            // If no, then the algorithm is free to traverse.
+            if (!(lessThan <= 0)) {
+                innerDisplayItemsInRange(node.left(), lower, upper);
+            }
+            // check root, does this currentKey falls within the range of the upper and lower bound?
+            // If yes, then go ahead and print it.
+            if (!(lessThan <= 0) && !(greaterThan >= 0)) {
+                System.out.println(node.getValue());
+            }
+            // check right, but first answer the question: Is this currentKey greater than the upper bound?
+            // If no, then the algorithm is free traverse.
+            if (!(greaterThan >= 0)) {
+                innerDisplayItemsInRange(node.right(), lower, upper);
+            }
+        }
+    }
+
     ///////////////////////////////////////////////
     // Map contract
     //////////////////////////////////////////////
@@ -549,17 +596,7 @@ public class BinarySearchTree<K,V> implements BinaryTree<K,V> {
 
     @Override
     public void displayItemsInRange(K lower, K upper) {
-        List<BinaryTreeNode<K,V>> values = new ArrayList<>();
-        traverser(TraversalType.INORDER, node -> {
-            @SuppressWarnings("unchecked")
-            Comparable<? super K> comparable = (Comparable<? super K>) node.getKey();
-            int lesser = comparable.compareTo(lower);
-            int greater = comparable.compareTo(upper);
-            if ( lesser > 0 && greater < 0) {
-                values.add(node);
-            }
-        });
-        values.stream().map(BinaryTreeNode::getValue).forEach(System.out::println);
+        innerDisplayItemsInRange(root, lower, upper);
     }
 
     @Override
