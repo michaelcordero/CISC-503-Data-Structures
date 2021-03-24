@@ -215,6 +215,7 @@ public class BinarySearchTree<K,V> implements BinaryTree<K,V> {
     }
 
     /**
+     * Problem:
      * Extend the class BinarySearchTree by adding a public method displayItemsInRange (l, w) that outputs in ascending
      * order of node value, all the nodes in a BST whose values, v lie in the range l < v < w . Use recursion and avoid
      * entering any subtrees that can't contain any elements in the desired range. You must also write a test program
@@ -230,7 +231,9 @@ public class BinarySearchTree<K,V> implements BinaryTree<K,V> {
      * Solution #3: This inner method accepts a BinaryTreeNode as an argument, with each successive call,
      * it visits that node.
      * Solution #4: Lower bounds checking occurs before traversal into the left subtree. Upper bounds checking
-     * before entering nodes of the right subtree.
+     * before entering nodes of the right subtree. Using >= & <= because, the problem says the value must fall between
+     * the range. If you have a range of 4 < value < 10, then the valid values are: 5,6,7,8,9, not 4 and 10! Because
+     * 4 is not greater than 4 and 10 is not less than 10.
      *
      * @param node  - currently being traversed node, root is expected to be passed in first.
      * @param lower - represents the lower limit of the range
@@ -243,7 +246,7 @@ public class BinarySearchTree<K,V> implements BinaryTree<K,V> {
         Comparable<? super K> currentKey = (Comparable<? super K>) node.getKey();
         int lessThan = currentKey.compareTo(lower);
         int greaterThan = currentKey.compareTo(upper);
-            // check left, but first answer the question: Is this currentKey less than the lower bound?
+            // check left, but first answer the question: Is this currentKey less than or equal to the lower bound?
             // If no, then the algorithm is free to traverse.
             if (!(lessThan <= 0)) {
                 innerDisplayItemsInRange(node.left(), lower, upper);
@@ -253,8 +256,8 @@ public class BinarySearchTree<K,V> implements BinaryTree<K,V> {
             if (!(lessThan <= 0) && !(greaterThan >= 0)) {
                 System.out.println(node.getValue());
             }
-            // check right, but first answer the question: Is this currentKey greater than the upper bound?
-            // If no, then the algorithm is free traverse.
+            // check right, but first answer the question: Is this currentKey greater than or equal to the upper bound?
+            // If no, then the algorithm is free to traverse.
             if (!(greaterThan >= 0)) {
                 innerDisplayItemsInRange(node.right(), lower, upper);
             }
