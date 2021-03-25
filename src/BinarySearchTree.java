@@ -18,7 +18,7 @@ public class BinarySearchTree<K,V> implements BinaryTree<K,V> {
     ///////////////////////////////////////////////
     // properties
     //////////////////////////////////////////////
-    private BinarySearchTreeNode<K,V> root;
+    protected BinarySearchTreeNode<K,V> root;
 
     ///////////////////////////////////////////////
     // constructors
@@ -30,7 +30,7 @@ public class BinarySearchTree<K,V> implements BinaryTree<K,V> {
     ///////////////////////////////////////////////
     // inner node class
     //////////////////////////////////////////////
-    private static class BinarySearchTreeNode<K,V> implements BinaryTreeNode<K,V> {
+    protected static class BinarySearchTreeNode<K,V> implements BinaryTreeNode<K,V> {
         /////////////////////////////////////////////
         // Properties
         ////////////////////////////////////////////
@@ -189,29 +189,29 @@ public class BinarySearchTree<K,V> implements BinaryTree<K,V> {
     }
 
     /**
-     * Inspired by OO Data Structures using Java 4th edition Dale, Joyce, & Weems. Page 470.
+     * Inspired by Geeks for Geeks
      * @param low - starting point index
      * @param high - end point index
      * @param list - structure to be indexed
      */
-    private void internalBalance(int low, int high, List<BinarySearchTreeNode<K,V>> list ) {
-        if (low == high) {
-            BinarySearchTreeNode<K,V> low_node = list.get(low);
-            this.put(low_node.getKey(),low_node.getValue());
+    private BinaryTreeNode<K,V> internalBalance(int low, int high, List<BinaryTreeNode<K,V>> list ) {
+        if (low > high) {
+            return null;
         }
-        else if ((low + 1) == high) {
-            BinarySearchTreeNode<K,V> low_node = list.get(low);
-            BinarySearchTreeNode<K,V> high_node = list.get(high);
-            this.put(low_node.getKey(),low_node.getValue());
-            this.put(high_node.getKey(), high_node.getValue());
+        // get the middle element and make it root
+        int mid = (low + high) /2;
+        BinarySearchTreeNode<K,V> current = (BinarySearchTreeNode<K, V>) list.get(mid);
+        // recursively construct the left subtree and make it left child of root
+        current.left = (BinarySearchTreeNode<K, V>) internalBalance(low, mid - 1, list );
+        if (current.left != null) {
+            current.left.parent = current;
         }
-        else {
-            int mid = (low + high) / 2;
-            BinarySearchTreeNode<K,V> mid_node = list.get(mid);
-            this.put(mid_node.getKey(), mid_node.getValue());
-            internalBalance(low, mid - 1, list);
-            internalBalance(mid + 1, high, list);
+        // recursively construct the right subtree and make it right child of the root
+        current.right = (BinarySearchTreeNode<K, V>) internalBalance(mid + 1, high, list);
+        if (current.right != null) {
+            current.right.parent = current;
         }
+        return current;
     }
 
     /**
@@ -381,8 +381,8 @@ public class BinarySearchTree<K,V> implements BinaryTree<K,V> {
                 found = true;
                 // special case for root
                 if (itr.isRoot()) {
-                    List<BinarySearchTreeNode<K,V>> list =  new ArrayList<>();
-                    traverser(TraversalType.INORDER, (node) -> list.add((BinarySearchTreeNode<K, V>) node));
+                    List<BinaryTreeNode<K,V>> list =  new ArrayList<>();
+                    traverser(TraversalType.INORDER, list::add);
                     list.remove(root);
                     this.root = null;
                     internalBalance(0, list.size() - 1, list);
@@ -481,10 +481,9 @@ public class BinarySearchTree<K,V> implements BinaryTree<K,V> {
 
     @Override
     public void balance() {
-        List<BinarySearchTreeNode<K,V>> list =  new ArrayList<>();
-        traverser(TraversalType.INORDER, (node) -> list.add((BinarySearchTreeNode<K, V>) node));
-        this.root = null;
-        internalBalance(0, list.size() - 1, list);
+        List<BinaryTreeNode<K,V>> list =  new ArrayList<>();
+        traverser(TraversalType.INORDER, list::add);
+        this.root = (BinarySearchTreeNode<K, V>) internalBalance(0, list.size() - 1, list);
     }
 
     /**
