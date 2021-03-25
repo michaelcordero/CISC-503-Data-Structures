@@ -6,83 +6,84 @@ public class AVLTree<K,V> extends BinarySearchTree<K,V> {
     ///////////////////////////////////////////////
     // properties
     //////////////////////////////////////////////
-//    AVLTreeNode<K,V> root;
+
+    //BinaryTreeNode<K,V> root;
 
     ///////////////////////////////////////////////
     // constructors
     //////////////////////////////////////////////
     public AVLTree() {
-//        this.root = (AVLTreeNode<K, V>) super.root;
+        //this.root = super.root;
     }
 
     ///////////////////////////////////////////////
     // inner node class
     //////////////////////////////////////////////
-    private static class AVLTreeNode<K,V> implements BinaryTreeNode<K,V> {
-        /////////////////////////////////////////////
-        // Properties
-        ////////////////////////////////////////////
-        K key;
-        V value;
-        protected AVLTreeNode<K,V> parent;
-        protected AVLTreeNode<K,V> left;
-        protected AVLTreeNode<K,V> right;
-        ////////////////////////////////////////////
-        // constructors
-        ////////////////////////////////////////////
-        AVLTreeNode(K key, V value) {
-            this.key = key;
-            this.value = value;
-        }
-
-        ////////////////////////////////////////////
-        // Methods
-        ///////////////////////////////////////////
-        @Override
-        public AVLTreeNode<K, V> parent() {
-            return parent;
-        }
-
-        @Override
-        public AVLTreeNode<K, V> left() {
-            return left;
-        }
-
-        @Override
-        public AVLTreeNode<K, V> right() {
-            return right;
-        }
-
-        @Override
-        public void setLeft(BinaryTreeNode<K, V> left) {
-            this.left = (AVLTreeNode<K, V>) left;
-        }
-
-        @Override
-        public void setRight(BinaryTreeNode<K, V> right) {
-            this.right = (AVLTreeNode<K, V>) right;
-        }
-
-        @Override
-        public void setParent(BinaryTreeNode<K, V> parent) {
-            this.parent = (AVLTreeNode<K, V>) parent;
-        }
-
-        @Override
-        public K getKey() {
-            return key;
-        }
-
-        @Override
-        public V getValue() {
-            return value;
-        }
-
-        @Override
-        public V setValue(V value) {
-            return value;
-        }
-    }
+//    private static class AVLTreeNode<K,V> implements BinaryTreeNode<K,V> {
+//        /////////////////////////////////////////////
+//        // Properties
+//        ////////////////////////////////////////////
+//        K key;
+//        V value;
+//        protected AVLTreeNode<K,V> parent;
+//        protected AVLTreeNode<K,V> left;
+//        protected AVLTreeNode<K,V> right;
+//        ////////////////////////////////////////////
+//        // constructors
+//        ////////////////////////////////////////////
+//        AVLTreeNode(K key, V value) {
+//            this.key = key;
+//            this.value = value;
+//        }
+//
+//        ////////////////////////////////////////////
+//        // Methods
+//        ///////////////////////////////////////////
+//        @Override
+//        public AVLTreeNode<K, V> parent() {
+//            return parent;
+//        }
+//
+//        @Override
+//        public AVLTreeNode<K, V> left() {
+//            return left;
+//        }
+//
+//        @Override
+//        public AVLTreeNode<K, V> right() {
+//            return right;
+//        }
+//
+//        @Override
+//        public void setLeft(BinaryTreeNode<K, V> left) {
+//            this.left = (AVLTreeNode<K, V>) left;
+//        }
+//
+//        @Override
+//        public void setRight(BinaryTreeNode<K, V> right) {
+//            this.right = (AVLTreeNode<K, V>) right;
+//        }
+//
+//        @Override
+//        public void setParent(BinaryTreeNode<K, V> parent) {
+//            this.parent = (AVLTreeNode<K, V>) parent;
+//        }
+//
+//        @Override
+//        public K getKey() {
+//            return key;
+//        }
+//
+//        @Override
+//        public V getValue() {
+//            return value;
+//        }
+//
+//        @Override
+//        public V setValue(V value) {
+//            return value;
+//        }
+//    }
     ///////////////////////////////////////////////
     // Private
     //////////////////////////////////////////////
@@ -108,7 +109,6 @@ public class AVLTree<K,V> extends BinarySearchTree<K,V> {
     @Override
     public V put(K key, V value) {
         V to_return = super.put(key,value);
-//        this.root = new AVLTreeNode<>(key, value);
         if (size() != 1) {
             balance();
         }
@@ -118,7 +118,9 @@ public class AVLTree<K,V> extends BinarySearchTree<K,V> {
     @Override
     public V remove(Object key) {
         V to_return = super.remove(key);
-        balance();
+        if (size() != 1) {
+            balance();
+        }
         return to_return;
     }
 
