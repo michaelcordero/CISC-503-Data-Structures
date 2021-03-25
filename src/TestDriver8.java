@@ -28,8 +28,10 @@ public class TestDriver8 {
         avl.put(48,48);
         avl.put(45,45);
         avl.put(49,49);
-        avl.values().forEach(System.out::println);
-        System.out.println("kth smallest element: " + avl.smallest(3));
+        avl.values().forEach(i -> System.out.print(i+","));
+        System.out.println();
+        int kth = 3;
+        System.out.printf("%dth smallest element: %d\n",kth, avl.smallest(3));
         System.out.println("===============================================================");
         System.out.println("===========    Prompt Test Case                      ==========");
         System.out.println("===============================================================");

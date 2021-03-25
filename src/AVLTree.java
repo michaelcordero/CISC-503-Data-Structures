@@ -137,7 +137,7 @@ public class AVLTree<K,V> extends BinarySearchTree<K,V> {
         AtomicReference<K> keySlot = new AtomicReference<>();
         AtomicInteger counter = new AtomicInteger(kth - 1);
         innerSmallest(root, counter, keySlot);
-        System.out.println("AtomicInteger: " +counter.get());
+//        System.out.println("AtomicInteger: " +counter.get());
         return keySlot.get();
     }
 
