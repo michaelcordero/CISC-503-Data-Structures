@@ -18,7 +18,7 @@ public class AVLTree<K,V> extends BinarySearchTree<K,V> {
     ///////////////////////////////////////////////
     // inner node class
     //////////////////////////////////////////////
-    private static class AVLTreeNode<K,V> extends BinarySearchTreeNode<K,V> {
+    private static class AVLTreeNode<K,V> implements BinaryTreeNode<K,V> {
         /////////////////////////////////////////////
         // Properties
         ////////////////////////////////////////////
@@ -31,7 +31,8 @@ public class AVLTree<K,V> extends BinarySearchTree<K,V> {
         // constructors
         ////////////////////////////////////////////
         AVLTreeNode(K key, V value) {
-            super(key, value);
+            this.key = key;
+            this.value = value;
         }
 
         ////////////////////////////////////////////
@@ -50,6 +51,21 @@ public class AVLTree<K,V> extends BinarySearchTree<K,V> {
         @Override
         public AVLTreeNode<K, V> right() {
             return right;
+        }
+
+        @Override
+        public void setLeft(BinaryTreeNode<K, V> left) {
+            this.left = (AVLTreeNode<K, V>) left;
+        }
+
+        @Override
+        public void setRight(BinaryTreeNode<K, V> right) {
+            this.right = (AVLTreeNode<K, V>) right;
+        }
+
+        @Override
+        public void setParent(BinaryTreeNode<K, V> parent) {
+            this.parent = (AVLTreeNode<K, V>) parent;
         }
 
         @Override

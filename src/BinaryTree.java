@@ -12,6 +12,10 @@ public interface BinaryTree<K, V> extends Map<K, V> {
         BinaryTreeNode<K, V> left();
 
         BinaryTreeNode<K, V> right();
+        // setters
+        void setLeft(BinaryTreeNode<K,V> left);
+        void setRight(BinaryTreeNode<K,V> right);
+        void setParent(BinaryTreeNode<K,V> parent);
 
         // quality of life methods
         default boolean isSingleParent() {
