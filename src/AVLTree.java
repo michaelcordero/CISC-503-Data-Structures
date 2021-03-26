@@ -172,7 +172,7 @@ public class AVLTree<K,V> extends BinarySearchTree<K,V> {
     // Public API
     //////////////////////////////////////////////
     public K find(int kth) {
-        return find(kth, (AVLTreeNode<K, V>) root);
+        return find(kth, (AVLTreeNode<K, V>) root());
     }
 
 }
