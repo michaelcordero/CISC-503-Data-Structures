@@ -1,5 +1,4 @@
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicReference;
 
 public class AVLTree<K,V> extends BinarySearchTree<K,V> {
     ///////////////////////////////////////////////
@@ -97,21 +96,31 @@ public class AVLTree<K,V> extends BinarySearchTree<K,V> {
     ///////////////////////////////////////////////
     // Private
     //////////////////////////////////////////////
-    // O(n) solution = bad! commenting out for demolition.
-//    public void innerSmallest(BinaryTreeNode<K,V> node, AtomicInteger counter, AtomicReference<K> keySlot) {
-//        if (node != null && keySlot.get() == null ) {
-//            // check left
-//            innerSmallest(node.left(), counter, keySlot);
-//            // check root
-//            if (keySlot.get() == null && counter.get() == 0) {
-//                keySlot.set(node.getKey());
-//            } else {
-//                counter.getAndDecrement();
-//            }
-//            // check right
-//            innerSmallest(node.right(), counter, keySlot);
-//        }
-//    }
+
+    /**
+     * This solution finds the kth smallest element key in O(log n) time.
+     * @param kth - the kth ordered element in the sequence of the AVL tree.
+     * @param node - the current node being iterated upon
+     * @return - the kth smallest key if present, null if not.
+     */
+    private K find(int kth, AVLTreeNode<K,V> node) {
+        if (node.left() == null && kth == 1) {
+            return node.getKey();
+        }
+        if (node.left() == null && kth == 2) {
+            return node.right().getKey();
+        }
+        if (kth <= node.left().size() ) {
+            return find(kth,node.left());
+        }
+        if (kth == node.left().size() + 1 ) {
+            return node.getKey();
+        }
+        if (kth > node.left().size() + 1) {
+           return find(kth - node.left().size() - 1, node.right());
+        }
+        return null;
+    }
 
     ///////////////////////////////////////////////
     // Map contract
@@ -144,12 +153,8 @@ public class AVLTree<K,V> extends BinarySearchTree<K,V> {
     ///////////////////////////////////////////////
     // Public API
     //////////////////////////////////////////////
-    public K smallest(int kth) {
-        AtomicReference<K> keySlot = new AtomicReference<>();
-//        AtomicInteger counter = new AtomicInteger(kth - 1);
-//        innerSmallest(root, counter, keySlot);
-//        System.out.println("AtomicInteger: " +counter.get());
-        return keySlot.get();
+    public K find(int kth) {
+        return find(kth, (AVLTreeNode<K, V>) root);
     }
 
 }
