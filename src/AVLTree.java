@@ -118,6 +118,10 @@ public class AVLTree<K,V> extends BinarySearchTree<K,V> {
      * kth smallest element.
      */
     private K find(int kth, AVLTreeNode<K,V> node) {
+        // guard clause
+        if (kth < 1 || kth > node.size()) {
+            return null;
+        }
         // kth is in one of the current node's children
         if (node.left() == null && kth == 1) {
             return node.getKey();
