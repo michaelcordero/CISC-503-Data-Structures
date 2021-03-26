@@ -1,5 +1,13 @@
 import java.util.Map;
 
+/**
+ * This AVLTree implementation inherits it's operations from the BinarySearchTree. The two major differences in this
+ * class is that AVLTrees are defined as "self-balancing" trees. Meaning that after every insertion or deletion, the
+ * tree will re-balance itself, without the user's request. The second major difference is that it's AVLTreeNode use
+ * the computed size property to solve the kth smallest element problem in O(log n) time.[
+ * @param <K> - type of keys
+ * @param <V> - type of values
+ */
 public class AVLTree<K,V> extends BinarySearchTree<K,V> {
     ///////////////////////////////////////////////
     // properties

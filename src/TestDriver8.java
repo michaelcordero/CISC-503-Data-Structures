@@ -1,3 +1,5 @@
+import java.util.Scanner;
+
 public class TestDriver8 {
 
     public static void main(String[] args) {
@@ -58,5 +60,39 @@ public class TestDriver8 {
         System.out.println("===============================================================");
         System.out.println("===========    Prompt Test Case                      ==========");
         System.out.println("===============================================================");
+        AVLTree<Integer,Integer> prompt_tree = new AVLTree<>();
+        System.out.println("Please enter 10 or more integers. Press Q when done");
+        Scanner scanner = new Scanner(System.in);
+        boolean exit = false;
+        while (!exit ) {
+            String input = scanner.nextLine();
+            try {
+                int n = Integer.parseInt(input);
+                prompt_tree.put(n, n);
+            } catch (NumberFormatException e) {
+                if (input.equals("Q") || input.equals("q")) {
+                    exit = true;
+                } else {
+                    System.out.println("Please enter a valid integer.");
+                }
+            }
+        }
+        System.out.println("The following elements were entered into the AVLTree.");
+        prompt_tree.values().forEach(i -> System.out.print(i +","));
+        System.out.println();
+        System.out.println("Please enter a kth smallest key: ");
+        int kth_element = 0;
+        boolean kth_exit = false;
+        while (!kth_exit) {
+            String input = scanner.nextLine();
+            try {
+                kth_element = Integer.parseInt(input);
+                kth_exit = true;
+            } catch (NumberFormatException e) {
+                System.out.println("Please enter a valid integer.");
+            }
+        }
+        System.out.println("You entered: "+ kth_element);
+        System.out.println("The kth smallest element in this AVLTree is: " + prompt_tree.find(kth_element));
     }
 }
