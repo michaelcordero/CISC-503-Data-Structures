@@ -341,9 +341,16 @@ public class BinarySearchTree<K,V> implements BinaryTree<K,V> {
 
     @Override
     public V put(K key, V value) {
-        BinaryTreeNode<K,V> node = new BinarySearchTreeNode<>(key,value);
+        // Item 52: Refer to objects by their Interfaces. Effective Java 2nd edition by Josh Bloch.
+        BinaryTreeNode<K,V> node;
+        // So this class can be extended by other types of trees and their nodes
+        if (this instanceof AVLTree ) {
+            node = new AVLTree.AVLTreeNode<>(key, value);
+        } else {
+            node = new BinarySearchTreeNode<>(key,value);
+        }
         if (root == null) {
-            root = (BinarySearchTreeNode<K, V>) node;
+            root = node;
             return root.getValue();
         }
         boolean inserted = false;

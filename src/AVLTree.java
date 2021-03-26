@@ -1,5 +1,4 @@
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class AVLTree<K,V> extends BinarySearchTree<K,V> {
@@ -7,100 +6,112 @@ public class AVLTree<K,V> extends BinarySearchTree<K,V> {
     // properties
     //////////////////////////////////////////////
 
-    //BinaryTreeNode<K,V> root;
-
     ///////////////////////////////////////////////
     // constructors
     //////////////////////////////////////////////
     public AVLTree() {
-        //this.root = super.root;
     }
 
     ///////////////////////////////////////////////
     // inner node class
     //////////////////////////////////////////////
-//    private static class AVLTreeNode<K,V> implements BinaryTreeNode<K,V> {
-//        /////////////////////////////////////////////
-//        // Properties
-//        ////////////////////////////////////////////
-//        K key;
-//        V value;
-//        protected AVLTreeNode<K,V> parent;
-//        protected AVLTreeNode<K,V> left;
-//        protected AVLTreeNode<K,V> right;
-//        ////////////////////////////////////////////
-//        // constructors
-//        ////////////////////////////////////////////
-//        AVLTreeNode(K key, V value) {
-//            this.key = key;
-//            this.value = value;
-//        }
-//
-//        ////////////////////////////////////////////
-//        // Methods
-//        ///////////////////////////////////////////
-//        @Override
-//        public AVLTreeNode<K, V> parent() {
-//            return parent;
-//        }
-//
-//        @Override
-//        public AVLTreeNode<K, V> left() {
-//            return left;
-//        }
-//
-//        @Override
-//        public AVLTreeNode<K, V> right() {
-//            return right;
-//        }
-//
-//        @Override
-//        public void setLeft(BinaryTreeNode<K, V> left) {
-//            this.left = (AVLTreeNode<K, V>) left;
-//        }
-//
-//        @Override
-//        public void setRight(BinaryTreeNode<K, V> right) {
-//            this.right = (AVLTreeNode<K, V>) right;
-//        }
-//
-//        @Override
-//        public void setParent(BinaryTreeNode<K, V> parent) {
-//            this.parent = (AVLTreeNode<K, V>) parent;
-//        }
-//
-//        @Override
-//        public K getKey() {
-//            return key;
-//        }
-//
-//        @Override
-//        public V getValue() {
-//            return value;
-//        }
-//
-//        @Override
-//        public V setValue(V value) {
-//            return value;
-//        }
-//    }
+    static class AVLTreeNode<K,V> implements BinaryTreeNode<K,V> {
+        /////////////////////////////////////////////
+        // Properties
+        ////////////////////////////////////////////
+        K key;
+        V value;
+        protected AVLTreeNode<K,V> parent;
+        protected AVLTreeNode<K,V> left;
+        protected AVLTreeNode<K,V> right;
+        int size;
+        ////////////////////////////////////////////
+        // constructors
+        ////////////////////////////////////////////
+        AVLTreeNode(K key, V value) {
+            this.key = key;
+            this.value = value;
+            this.size = 0;
+        }
+
+        ////////////////////////////////////////////
+        // Methods
+        ///////////////////////////////////////////
+        @Override
+        public AVLTreeNode<K, V> parent() {
+            return parent;
+        }
+
+        @Override
+        public AVLTreeNode<K, V> left() {
+            return left;
+        }
+
+        @Override
+        public AVLTreeNode<K, V> right() {
+            return right;
+        }
+
+        @Override
+        public void setLeft(BinaryTreeNode<K, V> left) {
+            this.left = (AVLTreeNode<K, V>) left;
+        }
+
+        @Override
+        public void setRight(BinaryTreeNode<K, V> right) {
+            this.right = (AVLTreeNode<K, V>) right;
+        }
+
+        @Override
+        public void setParent(BinaryTreeNode<K, V> parent) {
+            this.parent = (AVLTreeNode<K, V>) parent;
+        }
+
+        @Override
+        public K getKey() {
+            return key;
+        }
+
+        @Override
+        public V getValue() {
+            return value;
+        }
+
+        @Override
+        public V setValue(V value) {
+            return value;
+        }
+
+        /**
+         * The size method computes the size of a node, which is one plus the sum of it's left and right
+         * child nodes. The text suggests modifying the insert and deletes to update the size, but this
+         * method proves that is unnecessary.
+         * @return - the number of nodes in the subtree rooted at the node plus 1.
+         */
+        public int size() {
+            int leftSize = left != null ? left().size() : 0;
+            int rightSize = right != null ? right().size() : 0;
+            return 1 + leftSize + rightSize;
+        }
+    }
     ///////////////////////////////////////////////
     // Private
     //////////////////////////////////////////////
-    public void innerSmallest(BinaryTreeNode<K,V> node, AtomicInteger counter, AtomicReference<K> keySlot) {
-        if (node != null && keySlot.get() == null ) {
-            // check left
-            innerSmallest(node.left(), counter, keySlot);
-            // check root
-            if (keySlot.get() == null && counter.get() == 0) {
-                keySlot.set(node.getKey());
-            } else {
-                counter.getAndDecrement();
-            }
-            // check right
-            innerSmallest(node.right(), counter, keySlot);
-        }
-    }
+    // O(n) solution = bad! commenting out for demolition.
+//    public void innerSmallest(BinaryTreeNode<K,V> node, AtomicInteger counter, AtomicReference<K> keySlot) {
+//        if (node != null && keySlot.get() == null ) {
+//            // check left
+//            innerSmallest(node.left(), counter, keySlot);
+//            // check root
+//            if (keySlot.get() == null && counter.get() == 0) {
+//                keySlot.set(node.getKey());
+//            } else {
+//                counter.getAndDecrement();
+//            }
+//            // check right
+//            innerSmallest(node.right(), counter, keySlot);
+//        }
+//    }
 
     ///////////////////////////////////////////////
     // Map contract
@@ -135,8 +146,8 @@ public class AVLTree<K,V> extends BinarySearchTree<K,V> {
     //////////////////////////////////////////////
     public K smallest(int kth) {
         AtomicReference<K> keySlot = new AtomicReference<>();
-        AtomicInteger counter = new AtomicInteger(kth - 1);
-        innerSmallest(root, counter, keySlot);
+//        AtomicInteger counter = new AtomicInteger(kth - 1);
+//        innerSmallest(root, counter, keySlot);
 //        System.out.println("AtomicInteger: " +counter.get());
         return keySlot.get();
     }
