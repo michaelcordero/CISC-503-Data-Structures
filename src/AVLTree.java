@@ -173,7 +173,7 @@ public class AVLTree<K,V> extends BinarySearchTree<K,V> {
         AVLTreeNode<K,V> local_root = ((AVLTreeNode<K, V>) root());
         // check once before running the algorithm, if kth key is out of bounds
         if (kth < 1 || kth > local_root.size()) {
-            return null;
+            throw new IllegalArgumentException("kth key out of bounds");
         }
         return find(kth, local_root);
     }
