@@ -18,7 +18,7 @@ public class BinarySearchTree<K,V> implements BinaryTree<K,V> {
     ///////////////////////////////////////////////
     // properties
     //////////////////////////////////////////////
-    private BinarySearchTreeNode<K,V> root;
+    private BinaryTreeNode<K,V> root;
 
     ///////////////////////////////////////////////
     // constructors
@@ -28,9 +28,16 @@ public class BinarySearchTree<K,V> implements BinaryTree<K,V> {
     }
 
     ///////////////////////////////////////////////
+    // accessor
+    //////////////////////////////////////////////
+    public BinaryTreeNode<K, V> root() {
+        return root;
+    }
+
+    ///////////////////////////////////////////////
     // inner node class
     //////////////////////////////////////////////
-    private static class BinarySearchTreeNode<K,V> implements BinaryTreeNode<K,V> {
+    protected static class BinarySearchTreeNode<K,V> implements BinaryTreeNode<K,V> {
         /////////////////////////////////////////////
         // Properties
         ////////////////////////////////////////////
@@ -70,6 +77,21 @@ public class BinarySearchTree<K,V> implements BinaryTree<K,V> {
         }
 
         @Override
+        public void setLeft(BinaryTreeNode<K, V> left) {
+            this.left = (BinarySearchTreeNode<K, V>) left;
+        }
+
+        @Override
+        public void setRight(BinaryTreeNode<K, V> right) {
+            this.right = (BinarySearchTreeNode<K, V>) right;
+        }
+
+        @Override
+        public void setParent(BinaryTreeNode<K, V> parent) {
+            this.parent = (BinarySearchTreeNode<K, V>) parent;
+        }
+
+        @Override
         public K getKey() {
             return key;
         }
@@ -95,13 +117,13 @@ public class BinarySearchTree<K,V> implements BinaryTree<K,V> {
         return 1 + amount(node.left()) + amount(node.right());
     }
 
-    private void innerSwap(BinarySearchTreeNode<K,V> node) {
+    private void innerSwap(BinaryTreeNode<K,V> node) {
         if ( node != null && !node.isLeaf()) {
-            BinarySearchTreeNode<K,V> temp = node.left;
-            node.left = node.right;
-            node.right = temp;
-            innerSwap(node.left);
-            innerSwap(node.right);
+            BinaryTreeNode<K,V> temp = node.left();
+            node.setLeft(node.right());
+            node.setRight(temp);
+            innerSwap(node.left());
+            innerSwap(node.right());
         }
     }
 
@@ -189,29 +211,29 @@ public class BinarySearchTree<K,V> implements BinaryTree<K,V> {
     }
 
     /**
-     * Inspired by OO Data Structures using Java 4th edition Dale, Joyce, & Weems. Page 470.
+     * Inspired by Geeks for Geeks
      * @param low - starting point index
      * @param high - end point index
      * @param list - structure to be indexed
      */
-    private void internalBalance(int low, int high, List<BinarySearchTreeNode<K,V>> list ) {
-        if (low == high) {
-            BinarySearchTreeNode<K,V> low_node = list.get(low);
-            this.put(low_node.getKey(),low_node.getValue());
+    private BinaryTreeNode<K,V> internalBalance(int low, int high, List<BinaryTreeNode<K,V>> list ) {
+        if (low > high) {
+            return null;
         }
-        else if ((low + 1) == high) {
-            BinarySearchTreeNode<K,V> low_node = list.get(low);
-            BinarySearchTreeNode<K,V> high_node = list.get(high);
-            this.put(low_node.getKey(),low_node.getValue());
-            this.put(high_node.getKey(), high_node.getValue());
+        // get the middle element and make it root
+        int mid = (low + high) /2;
+        BinaryTreeNode<K,V> current = list.get(mid);
+        // recursively construct the left subtree and make it left child of root
+        current.setLeft(internalBalance(low, mid - 1, list ));
+        if (current.left() != null) {
+            current.left().setParent(current);
         }
-        else {
-            int mid = (low + high) / 2;
-            BinarySearchTreeNode<K,V> mid_node = list.get(mid);
-            this.put(mid_node.getKey(), mid_node.getValue());
-            internalBalance(low, mid - 1, list);
-            internalBalance(mid + 1, high, list);
+        // recursively construct the right subtree and make it right child of the root
+        current.setRight(internalBalance(mid + 1, high, list));
+        if (current.right() != null) {
+            current.right().setParent(current);
         }
+        return current;
     }
 
     /**
@@ -280,7 +302,7 @@ public class BinarySearchTree<K,V> implements BinaryTree<K,V> {
     @Override
     public boolean containsKey(Object key) {
         boolean found = false;
-        BinarySearchTreeNode<K,V> itr = root;
+        BinaryTreeNode<K,V> itr = root;
         @SuppressWarnings("unchecked")
         Comparable<? super K> k = (Comparable<? super K>) key;
         while (!found && itr != null) {
@@ -289,9 +311,9 @@ public class BinarySearchTree<K,V> implements BinaryTree<K,V> {
                 found = true;
             }
             if (comparison < 0) {
-                itr = itr.left;
+                itr = itr.left();
             } else if (comparison > 0) {
-                itr = itr.right;
+                itr = itr.right();
             }
         }
         return found;
@@ -308,15 +330,15 @@ public class BinarySearchTree<K,V> implements BinaryTree<K,V> {
 
     @Override
     public V get(Object key) {
-        BinarySearchTreeNode<K,V> itr = root;
+        BinaryTreeNode<K,V> itr = root;
         @SuppressWarnings("unchecked")
         Comparable<? super K> k = (Comparable<? super K>) key;
         while (itr != null) {
             int comparison = k.compareTo(itr.getKey());
             if (comparison < 0) {
-                itr = itr.left;
+                itr = itr.left();
             } else if (comparison > 0) {
-                itr = itr.right;
+                itr = itr.right();
             } else {
                 return itr.getValue();
             }
@@ -326,13 +348,20 @@ public class BinarySearchTree<K,V> implements BinaryTree<K,V> {
 
     @Override
     public V put(K key, V value) {
-        BinarySearchTreeNode<K,V> node = new BinarySearchTreeNode<>(key,value);
+        // Item 52: Refer to objects by their Interfaces. Effective Java 2nd edition by Josh Bloch.
+        BinaryTreeNode<K,V> node;
+        // So this class can be extended by other types of trees and their nodes
+        if (this instanceof AVLTree ) {
+            node = new AVLTree.AVLTreeNode<>(key, value);
+        } else {
+            node = new BinarySearchTreeNode<>(key,value);
+        }
         if (root == null) {
             root = node;
             return root.getValue();
         }
         boolean inserted = false;
-        BinarySearchTreeNode<K,V> itr = root;
+        BinaryTreeNode<K,V> itr = root;
         V previous = null;
         @SuppressWarnings("unchecked")
         Comparable<? super K> k = (Comparable<? super K>) key;
@@ -340,19 +369,19 @@ public class BinarySearchTree<K,V> implements BinaryTree<K,V> {
             int comparison = k.compareTo(itr.getKey());
             if (comparison < 0) {
                 if (itr.left() == null) {
-                    itr.left = node;
-                    node.parent = itr;
+                    itr.setLeft(node);
+                    node.setParent(itr);
                     inserted = true;
                 } else {
-                    itr = itr.left;
+                    itr = itr.left();
                 }
             } else if( comparison > 0) {
                 if (itr.right() == null) {
-                    itr.right = node;
-                    node.parent = itr;
+                    itr.setRight(node);
+                    node.setParent(itr);
                     inserted = true;
                 } else {
-                    itr = itr.right;
+                    itr = itr.right();
                 }
             } else {
                 // keep key, overwrite previous value
@@ -366,42 +395,42 @@ public class BinarySearchTree<K,V> implements BinaryTree<K,V> {
     @Override
     public V remove(Object key) {
         boolean found = false;
-        BinarySearchTreeNode<K,V> itr = root;
+        BinaryTreeNode<K,V> itr = root;
         @SuppressWarnings("unchecked")
         Comparable<? super K> k = (Comparable<? super K>) key;
         while (!found && itr != null) {
             int comparison = k.compareTo(itr.getKey());
             if (comparison < 0) {
-                itr = itr.left;
+                itr = itr.left();
             } else if (comparison > 0) {
-                itr = itr.right;
+                itr = itr.right();
             }
             // key object found
             else {
                 found = true;
                 // special case for root
                 if (itr.isRoot()) {
-                    List<BinarySearchTreeNode<K,V>> list =  new ArrayList<>();
-                    traverser(TraversalType.INORDER, (node) -> list.add((BinarySearchTreeNode<K, V>) node));
+                    List<BinaryTreeNode<K,V>> list =  new ArrayList<>();
+                    traverser(TraversalType.INORDER, list::add);
                     list.remove(root);
                     this.root = null;
                     internalBalance(0, list.size() - 1, list);
                 } else {
-                    BinarySearchTreeNode<K,V> parent = itr.parent;
-                    BinarySearchTreeNode<K,V> left = itr.left;
-                    BinarySearchTreeNode<K,V> right = itr.right;
+                    BinaryTreeNode<K,V> parent = itr.parent();
+                    BinaryTreeNode<K,V> left = itr.left();
+                    BinaryTreeNode<K,V> right = itr.right();
                     // re-attaching the child nodes to the node to be removed parent.
                     if (right != null) {
-                        if (itr == parent.left) {
-                            parent.left = right;
+                        if (itr == parent.left()) {
+                            parent.setLeft(right);
                         } else {
-                            parent.right = right;
+                            parent.setRight(right);
                         }
                     } else {
-                        if (itr == parent.right) {
-                            parent.right = left;
+                        if (itr == parent.right()) {
+                            parent.setRight(left);
                         } else {
-                            parent.left = left;
+                            parent.setLeft(left);
                         }
                     }
                 }
@@ -481,10 +510,9 @@ public class BinarySearchTree<K,V> implements BinaryTree<K,V> {
 
     @Override
     public void balance() {
-        List<BinarySearchTreeNode<K,V>> list =  new ArrayList<>();
-        traverser(TraversalType.INORDER, (node) -> list.add((BinarySearchTreeNode<K, V>) node));
-        this.root = null;
-        internalBalance(0, list.size() - 1, list);
+        List<BinaryTreeNode<K,V>> list =  new ArrayList<>();
+        traverser(TraversalType.INORDER, list::add);
+        this.root = internalBalance(0, list.size() - 1, list);
     }
 
     /**
