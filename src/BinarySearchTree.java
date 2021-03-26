@@ -15,7 +15,6 @@ import java.util.function.Consumer;
  * @param <V> - The type of values
  */
 public class BinarySearchTree<K,V> implements BinaryTree<K,V> {
-
     ///////////////////////////////////////////////
     // properties
     //////////////////////////////////////////////
