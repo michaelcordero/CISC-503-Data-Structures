@@ -99,6 +99,9 @@ public class AVLTree<K,V> extends BinarySearchTree<K,V> {
 
     /**
      * This solution finds the kth smallest element key in O(log n) time.
+     * The algorithm is basically leveraging the new size property to predict
+     * if there are any other subtree nodes to be checked for the kth key's
+     * placement.
      * @param kth - the kth ordered element in the sequence of the AVL tree.
      * @param node - the current node being iterated upon
      * @return - returns null if kth < 1 or kth > the size of the tree, otherwise the
