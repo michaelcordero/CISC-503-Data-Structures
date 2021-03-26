@@ -31,14 +31,12 @@ public class AVLTree<K,V> extends BinarySearchTree<K,V> {
         protected AVLTreeNode<K,V> parent;
         protected AVLTreeNode<K,V> left;
         protected AVLTreeNode<K,V> right;
-        int size;
         ////////////////////////////////////////////
         // constructors
         ////////////////////////////////////////////
         AVLTreeNode(K key, V value) {
             this.key = key;
             this.value = value;
-            this.size = 0;
         }
 
         ////////////////////////////////////////////
