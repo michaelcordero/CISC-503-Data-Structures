@@ -101,7 +101,8 @@ public class AVLTree<K,V> extends BinarySearchTree<K,V> {
      * This solution finds the kth smallest element key in O(log n) time.
      * @param kth - the kth ordered element in the sequence of the AVL tree.
      * @param node - the current node being iterated upon
-     * @return - the kth smallest key if present, null if not.
+     * @return - returns null if kth < 1 or kth > the size of the tree, otherwise the
+     * kth smallest element.
      */
     private K find(int kth, AVLTreeNode<K,V> node) {
         if (node.left() == null && kth == 1) {
