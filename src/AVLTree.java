@@ -102,6 +102,8 @@ public class AVLTree<K,V> extends BinarySearchTree<K,V> {
      * The algorithm is basically leveraging the new size property to predict
      * if there are any other subtree nodes to be checked for the kth key's
      * placement.
+     *
+     * Credits go to #5 Ch. 25 of Intro to Java Programming by Liang
      * @param kth - the kth ordered element in the sequence of the AVL tree.
      * @param node - the current node being iterated upon
      * @return - returns null if kth < 1 or kth > the size of the tree, otherwise the
