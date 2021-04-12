@@ -84,6 +84,21 @@ public class WeightedGraph<K extends Comparable<K>, V> implements Graph<K, V> {
     }
 
     @Override
+    public boolean containsVertex(K key) {
+        return verticesMap.containsKey(key);
+    }
+
+    @Override
+    public K min() {
+        return ((TreeMap<K,V>)verticesMap).firstKey();
+    }
+
+    @Override
+    public K max() {
+        return ((TreeMap<K,V>)verticesMap).lastKey();
+    }
+
+    @Override
     public void addVertex(K key, V value) {
         GraphVertex<K, V> vertex = new WeightedGraphVertex<>(key, value);
         verticesMap.put(key, vertex);
