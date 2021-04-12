@@ -83,6 +83,68 @@ public class WeightedGraph<K extends Comparable<K>, V> implements Graph<K, V> {
                     '}';
         }
     }
+    ///////////////////////////////////////////////
+    // Private
+    //////////////////////////////////////////////
+
+    /**
+     * This shortest path method uses Dijkstra's famous algorithm for finding the shortest path from one vertex to
+     * another vertex, by using a non-negative weighted graph.
+     * Dijkstra's solution works by using a n x 3 table to store the least costly distances from the start node to the
+     * currently iterated vertex, as well as storing the previous index, or parent index as the third column in the
+     * table. A visualization helps for understanding this, because the table is updated, if there is a better path
+     * distance value found when traversing the graph structure.
+     *
+     * +------------------------------------------------+
+     * +  Vertex   |   Distance Value  |  Parent Vertex +
+     * +------------------------------------------------+
+     * +  Start    |   0               |   start        +
+     * +------------------------------------------------+
+     * +   A       |   1               |   start        +
+     * +------------------------------------------------+
+     * +   B       |   2               |   A            +
+     * +------------------------------------------------+
+     * +   C       |   1               |   start        +
+     * +------------------------------------------------+
+     * +   D       |   3               |   B            +
+     * +------------------------------------------------+
+     * Credits: (Back to Back SWE)[https://www.youtube.com/watch?v=K_1urzWrzLs]
+     *
+     * @param fromVertexKey - the starting vertex
+     * @return DijkstraTable - the table object with the solutions
+     */
+    private DijkstraTable<K, V> getDijkstraTable(K fromVertexKey) {
+        // Create Solution Table and Initialize all values to infinity
+        DijkstraTable<K, V> solution_table = new DijkstraTable<>(verticesMap);
+        // Change start vertex distance to zero
+        GraphVertex<K, V> start = verticesMap.get(fromVertexKey);
+        assert start != null;
+        solution_table.table().put(start, new DijkstraTable.DijkstraAttributes<>( 0, start));
+        // Declare minimum priority queue and populate with all values for processing
+        PriorityQueue<GraphVertex<K,V>> pq = new PriorityQueue<>(this.size(),
+                Comparator.comparing(v -> solution_table.table().get(v).getDistance()));
+        solution_table.table().keySet().forEach(pq::offer);
+        // now let's begin the algorithm
+        while (!pq.isEmpty()) {
+            GraphVertex<K, V> current = pq.poll();
+            // examine distances of all the adjacent nodes
+            for (GraphVertex<K, V> adjacent_vertex : current.adjacencyList()) {
+                int to_weight = adjacent_vertex.getEdge(current);
+                int current_distance = solution_table.table().get(adjacent_vertex).getDistance();
+                // when any positive int is added to Integer.MAX_VALUE, it overflows and results in a negative value.
+                // to fix this, we don't change the value and leave as is.
+                int computed_distance = solution_table.table().get(current).getDistance() + to_weight < 0
+                        ? solution_table.table().get(current).getDistance()
+                        : solution_table.table().get(current).getDistance() + to_weight;
+                if (computed_distance < current_distance) {
+                    // write new values to solution table
+                    solution_table.table().get(adjacent_vertex).setDistance(computed_distance);
+                    solution_table.table().get(adjacent_vertex).setParent(current);
+                }
+            }
+        }
+        return solution_table;
+    }
 
     ///////////////////////////////////////////////
     // Public API
@@ -132,56 +194,28 @@ public class WeightedGraph<K extends Comparable<K>, V> implements Graph<K, V> {
     }
 
     /**
-     * This shortest path method uses Dijkstra's famous algorithm for finding the shortest path from one vertex to
-     * another vertex, by using a non-negative weighted graph.
-     * Credits: (Back to Back SWE)[https://www.youtube.com/watch?v=K_1urzWrzLs]
-     *
-     * @param fromVertexKey - the starting vertex
-     * @param toVertexKey   - the ending vertex
+     * The Dijkstra table solves the shortest path problem for all of the vertices when given a from key.
+     * Of course the A* algorithm is better, because it doesn't visit all of the vertices, but this is
+     * easier to understand.
+     * This method abstracts that part away and then prints the requested shortest path for the given path
+     * of values.
+     * @param fromVertexKey - beginning vertex
+     * @param toVertexKey - end vertex
      */
     @Override
     public void shortestPath(K fromVertexKey, K toVertexKey) {
-        // Create solution Table
-        Map<GraphVertex<K, V>, DijkstraTable<K, V>> solution_table = new TreeMap<>();
-        // Initialize all values to Infinity
-        verticesMap.values().forEach(v -> solution_table.put(v, new DijkstraTable<>(v, Integer.MAX_VALUE, null)));
-        // Change start vertex distance to zero
-        GraphVertex<K, V> start = verticesMap.get(fromVertexKey);
-        assert start != null;
-        solution_table.put(start, new DijkstraTable<>(start, 0, start));
-        // Declare minimum priority queue and populate with all values for processing
-        PriorityQueue<DijkstraTable<K, V>> pq = new PriorityQueue<>(this.size(),
-                Comparator.comparing(DijkstraTable::getDistance));
-        solution_table.values().forEach(pq::offer);
-        // now let's begin the algorithm
-        while (!pq.isEmpty()) {
-            DijkstraTable<K, V> current = pq.poll();
-            // examine distances of all the adjacent nodes
-            for (GraphVertex<K, V> adjacent_vertex : current.getVertex().adjacencyList()) {
-                int to_weight = adjacent_vertex.getEdge(current.getVertex());
-                int current_distance = solution_table.get(adjacent_vertex).getDistance();
-                // when any positive int is added to Integer.MAX_VALUE, it overflows and results in a negative value.
-                // to fix this, we don't change the value and leave as is.
-                int computed_distance = current.getDistance() + to_weight < 0 ? current.getDistance()
-                        : current.getDistance() + to_weight;
-                if (computed_distance < current_distance) {
-                    // write new values to solution table
-                    solution_table.get(adjacent_vertex).setDistance(computed_distance);
-                    solution_table.get(adjacent_vertex).setParent(current.getVertex());
-                }
-            }
-        }
-        // values marked in solutions table, so now let's back track from the destination node to the start node.
-        // adding the parent vertices along the way.
-        // using a stack because we want the order to be reversed.
+        // The values are marked in solutions table, so now let's back track from the destination vertex to the start
+        // vertex. While adding the parent vertices along the way.
+        // Using a stack because we want the order to be reversed.
+        DijkstraTable<K, V> solution_table = getDijkstraTable(fromVertexKey);
         Stack<GraphVertex<K, V>> vertices_stack = new Stack<>();
-        GraphVertex<K,V> start_node = verticesMap.get(fromVertexKey);
-        GraphVertex<K, V> destination_node = verticesMap.get(toVertexKey);
-        vertices_stack.add(destination_node);
-        while (destination_node != null && destination_node != start_node) {
-            DijkstraTable<K, V> current = solution_table.get(destination_node);
-            destination_node = current.getParent();
-            vertices_stack.add(destination_node);
+        GraphVertex<K,V> start_vertex = verticesMap.get(fromVertexKey);
+        GraphVertex<K, V> destination_vertex = verticesMap.get(toVertexKey);
+        vertices_stack.add(destination_vertex);
+        while (destination_vertex != null && destination_vertex != start_vertex) {
+            DijkstraTable.DijkstraAttributes<K,V> current = solution_table.table().get(destination_vertex);
+            destination_vertex = current.getParent();
+            vertices_stack.add(destination_vertex);
         }
         System.out.print("The path is: ");
         while (!vertices_stack.empty()) {
