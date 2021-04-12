@@ -29,7 +29,7 @@ public class TestDriver9 {
                 }
             }
         }
-        scanner.close();
+        //scanner.close();
         System.out.println("===============================================================");
         System.out.println("========    Initialize Graph & Populate from file   ===========");
         System.out.println("===============================================================");
@@ -70,7 +70,7 @@ public class TestDriver9 {
                 graph.addEdge(key, next_vertex_key, default_edge_weight );
             }
         }
-        file_scanner.close();
+        //file_scanner.close();
         System.out.println("===============================================================");
         System.out.println("================     Test Adjacency Lists   ===================");
         System.out.println("===============================================================");
@@ -80,20 +80,19 @@ public class TestDriver9 {
         System.out.println("===============================================================");
         int vertex_one = 0;
         int vertex_two = 0;
-        Scanner path_scanner = new Scanner(System.in);
-        boolean path_exit = false;
-        System.out.printf("Enter two vertices in the range %d to %d to find a path for: ", graph.min(), graph.max());
-        while (!path_exit) {
-            String path_input = path_scanner.nextLine();
-            try {
-                String[] inputs = path_input.split(" ");
-                vertex_one = Integer.parseInt(inputs[0]);
-                vertex_two = Integer.parseInt(inputs[1]);
-                path_exit = true;
-            } catch (Exception e) {
-                System.out.println("invalid data. exiting.");
-                path_exit = true;
-                System.exit(-1);
+        try (Scanner path_scanner = new Scanner(System.in)) {
+            boolean path_exit = false;
+            System.out.printf("Enter two vertices in the range %d to %d to find a path for: ", graph.min(), graph.max());
+            while (!path_exit) {
+                String path_input = path_scanner.nextLine();
+                try {
+                    String[] inputs = path_input.split(" ");
+                    vertex_one = Integer.parseInt(inputs[0]);
+                    vertex_two = Integer.parseInt(inputs[1]);
+                    path_exit = true;
+                } catch (Exception e) {
+                    System.out.println("Enter two valid integers, with a space separating them.");
+                }
             }
         }
         graph.shortestPath(vertex_one, vertex_two);
