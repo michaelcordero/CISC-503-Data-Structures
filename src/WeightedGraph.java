@@ -195,6 +195,8 @@ public class WeightedGraph<K extends Comparable<K>, V> implements Graph<K, V> {
 
     /**
      * The Dijkstra table solves the shortest path problem for all of the vertices when given a from key.
+     * Of course the A* algorithm is better, because it doesn't visit all of the vertices, but this is
+     * easier to understand.
      * This method abstracts that part away and then prints the requested shortest path for the given path
      * of values.
      * @param fromVertexKey - beginning vertex

@@ -2,9 +2,14 @@ import java.util.Map;
 import java.util.TreeMap;
 
 /**
- * Represents one row/entry in the dijkstra solution table algorithm.
- * @param <K>
- * @param <V>
+ * The DijkstraTable is used as a registry for looking up the most recently computed, least costly path for a
+ * particular vertex. The algorithm in WeightedGraph writes to this table or class. Because of how the algorithm works,
+ * all of the values are initialized to Integer.MAX_VALUE. The parent vertex is then set later, when the vertex is
+ * visited, and a shortest path is computed with that parent vertex in mind.
+ * Since: 04/12/21
+ * Author: Michael Cordero
+ * @param <K> - identifier for the vertex, although not used in this table.
+ * @param <V> - value for the graph to make it useful.
  */
 public class DijkstraTable<K,V> {
     ///////////////////////////////////////////////
