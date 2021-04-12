@@ -157,38 +157,36 @@ public class WeightedGraph<K extends Comparable<K>, V> implements Graph<K, V> {
         while (!pq.isEmpty()) {
             DijkstraTable<K, V> current = pq.poll();
             // examine distances of all the adjacent nodes
-            current.getVertex().adjacencyList().forEach(v -> {
-                int to_weight = v.getEdge(current.getVertex());
-                int current_distance = solution_table.get(v).getDistance();
+            for (GraphVertex<K, V> adjacent_vertex : current.getVertex().adjacencyList()) {
+                int to_weight = adjacent_vertex.getEdge(current.getVertex());
+                int current_distance = solution_table.get(adjacent_vertex).getDistance();
                 // when any positive int is added to Integer.MAX_VALUE, it overflows and results in a negative value.
                 // to fix this, we don't change the value and leave as is.
                 int computed_distance = current.getDistance() + to_weight < 0 ? current.getDistance()
                         : current.getDistance() + to_weight;
                 if (computed_distance < current_distance) {
                     // write new values to solution table
-                    solution_table.get(v).setDistance(computed_distance);
-                    solution_table.get(v).setParent(current.getVertex());
+                    solution_table.get(adjacent_vertex).setDistance(computed_distance);
+                    solution_table.get(adjacent_vertex).setParent(current.getVertex());
                 }
-            });
+            }
         }
         // values marked in solutions table, so now let's back track from the destination node to the start node.
         // adding the parent vertices along the way.
         // using a stack because we want the order to be reversed.
-        Stack<GraphVertex<K, V>> path_vertices = new Stack<>();
+        Stack<GraphVertex<K, V>> vertices_stack = new Stack<>();
         GraphVertex<K,V> start_node = verticesMap.get(fromVertexKey);
         GraphVertex<K, V> destination_node = verticesMap.get(toVertexKey);
-        DijkstraTable<K, V> destination_table = solution_table.get(destination_node);
-        GraphVertex<K, V> parent = destination_table.getVertex();
-        path_vertices.add(parent);
-        while (parent != null && parent != start_node) {
-            DijkstraTable<K, V> current = solution_table.get(parent);
-            parent = current.getParent();
-            path_vertices.add(parent);
+        vertices_stack.add(destination_node);
+        while (destination_node != null && destination_node != start_node) {
+            DijkstraTable<K, V> current = solution_table.get(destination_node);
+            destination_node = current.getParent();
+            vertices_stack.add(destination_node);
         }
         System.out.print("The path is: ");
-        while (!path_vertices.empty()) {
-            GraphVertex<K, V> current = path_vertices.pop();
-            String arrow = !path_vertices.empty() ? " -> " : "";
+        while (!vertices_stack.empty()) {
+            GraphVertex<K, V> current = vertices_stack.pop();
+            String arrow = !vertices_stack.empty() ? " -> " : "";
             System.out.print(current.getKey() + arrow);
         }
     }
