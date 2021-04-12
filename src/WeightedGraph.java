@@ -202,18 +202,18 @@ public class WeightedGraph<K extends Comparable<K>, V> implements Graph<K, V> {
      */
     @Override
     public void shortestPath(K fromVertexKey, K toVertexKey) {
-        // The values marked in solutions table, so now let's back track from the destination node to the start node.
-        // adding the parent vertices along the way.
-        // using a stack because we want the order to be reversed.
+        // The values are marked in solutions table, so now let's back track from the destination vertex to the start
+        // vertex. While adding the parent vertices along the way.
+        // Using a stack because we want the order to be reversed.
         DijkstraTable<K, V> solution_table = getDijkstraTable(fromVertexKey);
         Stack<GraphVertex<K, V>> vertices_stack = new Stack<>();
-        GraphVertex<K,V> start_node = verticesMap.get(fromVertexKey);
-        GraphVertex<K, V> destination_node = verticesMap.get(toVertexKey);
-        vertices_stack.add(destination_node);
-        while (destination_node != null && destination_node != start_node) {
-            DijkstraTable.DijkstraAttributes<K,V> current = solution_table.table().get(destination_node);
-            destination_node = current.getParent();
-            vertices_stack.add(destination_node);
+        GraphVertex<K,V> start_vertex = verticesMap.get(fromVertexKey);
+        GraphVertex<K, V> destination_vertex = verticesMap.get(toVertexKey);
+        vertices_stack.add(destination_vertex);
+        while (destination_vertex != null && destination_vertex != start_vertex) {
+            DijkstraTable.DijkstraAttributes<K,V> current = solution_table.table().get(destination_vertex);
+            destination_vertex = current.getParent();
+            vertices_stack.add(destination_vertex);
         }
         System.out.print("The path is: ");
         while (!vertices_stack.empty()) {
