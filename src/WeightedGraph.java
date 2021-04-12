@@ -166,11 +166,12 @@ public class WeightedGraph<K extends Comparable<K>, V> implements Graph<K, V> {
         // adding the parent vertices along the way.
         // using a stack because we want the order to be reversed.
         Stack<GraphVertex<K, V>> path_vertices = new Stack<>();
+        GraphVertex<K,V> start_node = verticesMap.get(fromVertexKey);
         GraphVertex<K, V> destination_node = verticesMap.get(toVertexKey);
         DijkstraTable<K, V> destination_table = solution_table.get(destination_node);
         GraphVertex<K, V> parent = destination_table.getVertex();
         path_vertices.add(parent);
-        while (parent != null && parent != ((TreeMap<K, V>) solution_table).firstKey()) {
+        while (parent != null && parent != start_node) {
             DijkstraTable<K, V> current = solution_table.get(parent);
             parent = current.getParent();
             path_vertices.add(parent);
