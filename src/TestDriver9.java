@@ -11,7 +11,6 @@ public class TestDriver9 {
         System.out.println("======================     Read in File    ====================");
         System.out.println("===============================================================");
         System.out.println("Enter file name: ");
-        System.out.println("or 'Q' to quit");
         Scanner scanner = new Scanner(System.in);
         FileInputStream fis = null;
         boolean exit = false;
@@ -25,7 +24,7 @@ public class TestDriver9 {
                     exit = true;
                     System.exit(0);
                 } else {
-                    System.out.println("Enter a valid file name.");
+                    System.out.println("Enter a valid file name:");
                 }
             }
         }
@@ -91,7 +90,7 @@ public class TestDriver9 {
                     vertex_two = Integer.parseInt(inputs[1]);
                     path_exit = true;
                 } catch (Exception e) {
-                    System.out.println("Enter two valid integers, with a space separating them.");
+                    System.out.println("Enter two valid integers, with a space separating them: ");
                 }
             }
         }
