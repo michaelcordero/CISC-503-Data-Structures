@@ -1,5 +1,14 @@
 import java.util.*;
 
+/**
+ * This weighted graph implementation was made to implement Dijkstra's shortest path algorithm.
+ * It utilizes TreeMap to ensure ordering whenever keySet() is called.
+ * Edges are bound to be of type integer, which is a limitation.
+ * Since: 04/12/2021
+ * Author: Michael Cordero
+ * @param <K>
+ * @param <V>
+ */
 public class WeightedGraph<K extends Comparable<K>, V> implements Graph<K, V> {
     ///////////////////////////////////////////////
     // properties
