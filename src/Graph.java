@@ -25,4 +25,5 @@ public interface Graph<K, V> {
     //////////////////////////////////////////////
     void displayAdjacencyLists();
     void shortestPath(K fromVertexKey, K toVertexKey);
+    void displayDijkstraTable(K fromVertexKey);
 }

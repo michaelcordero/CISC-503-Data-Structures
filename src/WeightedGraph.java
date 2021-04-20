@@ -225,4 +225,9 @@ public class WeightedGraph<K extends Comparable<K>, V> implements Graph<K, V> {
         }
     }
 
+    @Override
+    public void displayDijkstraTable(K fromVertexKey) {
+        getDijkstraTable(verticesMap.get(fromVertexKey).getKey()).display();
+    }
+
 }
