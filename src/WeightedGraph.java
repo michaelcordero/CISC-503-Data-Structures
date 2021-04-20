@@ -1,4 +1,5 @@
 import java.util.*;
+import java.util.function.Consumer;
 
 /**
  * This weighted graph implementation was made to implement Dijkstra's shortest path algorithm.
@@ -228,6 +229,56 @@ public class WeightedGraph<K extends Comparable<K>, V> implements Graph<K, V> {
     @Override
     public void displayDijkstraTable(K fromVertexKey) {
         getDijkstraTable(verticesMap.get(fromVertexKey).getKey()).display();
+    }
+
+    /**
+     * Depth-first-search is used for backtracking, finding all paths, any operation that needs depth first.
+     * Time: O(v+e)
+     * @param operation - a terminal operation that is to be performed on each of the vertices.
+     */
+    @Override
+    public void dfs(Consumer<GraphVertex<K, V>> operation, K startKey) {
+        Stack<GraphVertex<K,V>> stack = new Stack<>();
+        Set<GraphVertex<K,V>> seen = new HashSet<>();
+        stack.push(verticesMap.get(startKey));
+        while (!stack.empty()) {
+            GraphVertex<K,V> current = stack.pop();
+            if (!seen.contains(current)) {
+                seen.add(current);
+                operation.accept(current);
+            }
+            for (GraphVertex<K, V> adjacent :
+                    current.adjacencyList()) {
+                if (!seen.contains(adjacent)) {
+                    stack.push(adjacent);
+                }
+            }
+        }
+    }
+
+    /**
+     * Breadth-first-search is used for when a level ordered traversal is need, or when the consumer needs to go wide
+     * first.
+     * @param operation - a terminal operation that is to be performed on each of the vertices.
+     */
+    @Override
+    public void bfs(Consumer<GraphVertex<K, V>> operation, K startKey) {
+        Queue<GraphVertex<K,V>> queue = new LinkedList<>();
+        Set<GraphVertex<K,V>> seen = new HashSet<>();
+        queue.add(verticesMap.get(startKey));
+        while (!queue.isEmpty()) {
+            GraphVertex<K,V> current = queue.poll();
+            if (!seen.contains(current)) {
+                seen.add(current);
+                operation.accept(current);
+            }
+            for (GraphVertex<K, V> adjacent :
+                    current.adjacencyList()) {
+             if (!seen.contains(adjacent)) {
+                 queue.add(adjacent);
+             }
+            }
+        }
     }
 
 }

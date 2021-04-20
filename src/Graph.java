@@ -1,4 +1,5 @@
 import java.util.List;
+import java.util.function.Consumer;
 
 public interface Graph<K, V> {
     ///////////////////////////////////////////////
@@ -26,4 +27,6 @@ public interface Graph<K, V> {
     void displayAdjacencyLists();
     void shortestPath(K fromVertexKey, K toVertexKey);
     void displayDijkstraTable(K fromVertexKey);
+    void dfs(Consumer<GraphVertex<K,V>> operation, K startKey);
+    void bfs(Consumer<GraphVertex<K,V>> operation, K startKey);
 }

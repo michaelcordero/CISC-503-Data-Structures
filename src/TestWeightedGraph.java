@@ -27,13 +27,9 @@ public class TestWeightedGraph {
         graph.addEdge(austin, dallas, 200);
         graph.addEdge(austin, houston, 160);
         graph.addEdge(chicago, denver, 1000);
-        graph.addEdge(dallas, austin, 200);
         graph.addEdge(dallas, chicago, 900);
         graph.addEdge(dallas, denver, 780);
         graph.addEdge(denver, atlanta, 1400);
-        graph.addEdge(denver, chicago, 1000);
-        graph.addEdge(houston, atlanta, 800);
-        graph.addEdge(washington, atlanta, 600);
         graph.addEdge(washington, dallas, 1300);
         // print dijkstra's table
         graph.displayDijkstraTable(washington);
@@ -41,5 +37,14 @@ public class TestWeightedGraph {
         System.out.println("=====================     Test Shortest Path      =============");
         System.out.println("===============================================================");
         graph.shortestPath(washington,denver);
+        System.out.println();
+        System.out.println("===============================================================");
+        System.out.println("=====================     Test Depth First Search      ========");
+        System.out.println("===============================================================");
+        graph.dfs(v -> System.out.println(v.getKey()), washington);
+        System.out.println("===============================================================");
+        System.out.println("===================     Test Breadth First Search      ========");
+        System.out.println("===============================================================");
+        graph.bfs(v -> System.out.println(v.getKey()), washington);
     }
 }
