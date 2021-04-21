@@ -14,7 +14,7 @@ import java.util.function.Consumer;
  * @param <K> - The type of keys
  * @param <V> - The type of values
  */
-public class BinarySearchTree<K,V> implements BinaryTree<K,V> {
+public class BinarySearchTree<K extends Comparable<K>,V> implements BinaryTree<K,V> {
     ///////////////////////////////////////////////
     // properties
     //////////////////////////////////////////////
@@ -237,6 +237,19 @@ public class BinarySearchTree<K,V> implements BinaryTree<K,V> {
     }
 
     /**
+     * This method exists to allow class implementers to specify the node for which to check the balance factor,
+     * usually the node will be root, but for recursive tree rotations, such as LR-RL in the AVLTree, this
+     * parameterization will be needed.
+     * @param node - the node for which to check the balance factor
+     * @return balance factor
+     */
+    private int balanceFactor(BinaryTreeNode<K,V> node) {
+        int left_height = node.left() != null ? innerHeight(node.left()) : 0;
+        int right_height = node.right() != null ? innerHeight(node.right()) : 0;
+        return left_height - right_height;
+    }
+
+    /**
      * Problem:
      * Extend the class BinarySearchTree by adding a public method displayItemsInRange (l, w) that outputs in ascending
      * order of node value, all the nodes in a BST whose values, v lie in the range l < v < w . Use recursion and avoid
@@ -264,8 +277,7 @@ public class BinarySearchTree<K,V> implements BinaryTree<K,V> {
     private void innerDisplayItemsInRange(BinaryTreeNode<K,V> node, K lower, K upper ) {
         // comparators have to be re-computed for each node's key
         if (node != null) {
-        @SuppressWarnings("unchecked")
-        Comparable<? super K> currentKey = (Comparable<? super K>) node.getKey();
+        Comparable<K> currentKey = node.getKey();
         int lessThan = currentKey.compareTo(lower);
         int greaterThan = currentKey.compareTo(upper);
             // check left, but first answer the question: Is this currentKey less than or equal to the lower bound?
@@ -363,10 +375,8 @@ public class BinarySearchTree<K,V> implements BinaryTree<K,V> {
         boolean inserted = false;
         BinaryTreeNode<K,V> itr = root;
         V previous = null;
-        @SuppressWarnings("unchecked")
-        Comparable<? super K> k = (Comparable<? super K>) key;
         while (!inserted && itr != null) {
-            int comparison = k.compareTo(itr.getKey());
+            int comparison = key.compareTo(itr.getKey());
             if (comparison < 0) {
                 if (itr.left() == null) {
                     itr.setLeft(node);
@@ -509,6 +519,12 @@ public class BinarySearchTree<K,V> implements BinaryTree<K,V> {
     }
 
     @Override
+    public boolean isBalanced() {
+        int balance_factor = balanceFactor(root);
+        return -1 <= balance_factor && balance_factor <=1;
+    }
+
+    @Override
     public void balance() {
         List<BinaryTreeNode<K,V>> list =  new ArrayList<>();
         traverser(TraversalType.INORDER, list::add);
@@ -629,12 +645,10 @@ public class BinarySearchTree<K,V> implements BinaryTree<K,V> {
     @Override
     public K split(K key, BinaryTree<K,V> lesser, BinaryTree<K,V> greater) {
         AtomicBoolean includeKey = new AtomicBoolean(false);
-        @SuppressWarnings("unchecked")
-        Comparable<? super K> comparable = (Comparable<? super K>) key;
         traverser(TraversalType.PREORDER, node -> {
-            if (comparable.compareTo(node.getKey()) < 0) {
+            if (key.compareTo(node.getKey()) < 0) {
                 greater.put(node.getKey(), node.getValue());
-            } else if (comparable.compareTo(node.getKey()) > 0) {
+            } else if (key.compareTo(node.getKey()) > 0) {
                 lesser.put(node.getKey(), node.getValue());
             } else {
                 includeKey.set(true);
