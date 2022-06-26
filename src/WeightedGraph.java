@@ -7,6 +7,7 @@ import java.util.function.Consumer;
  * Edges are bound to be of type integer, which is a limitation.
  * Since: 04/12/2021
  * Author: Michael Cordero
+ *
  * @param <K>
  * @param <V>
  */
@@ -95,7 +96,7 @@ public class WeightedGraph<K extends Comparable<K>, V> implements Graph<K, V> {
      * currently iterated vertex, as well as storing the previous index, or parent index as the third column in the
      * table. A visualization helps for understanding this, because the table is updated, if there is a better path
      * distance value found when traversing the graph structure.
-     *
+     * <p>
      * +------------------------------------------------+
      * +  Vertex   |   Distance Value  |  Parent Vertex +
      * +------------------------------------------------+
@@ -120,9 +121,9 @@ public class WeightedGraph<K extends Comparable<K>, V> implements Graph<K, V> {
         // Change start vertex distance to zero
         GraphVertex<K, V> start = verticesMap.get(fromVertexKey);
         assert start != null;
-        solution_table.table().put(start, new DijkstraTable.DijkstraAttributes<>( 0, start));
+        solution_table.table().put(start, new DijkstraTable.DijkstraAttributes<>(0, start));
         // Declare minimum priority queue and populate with all values for processing
-        PriorityQueue<GraphVertex<K,V>> pq = new PriorityQueue<>(this.size(),
+        PriorityQueue<GraphVertex<K, V>> pq = new PriorityQueue<>(this.size(),
                 Comparator.comparing(v -> solution_table.table().get(v).getDistance()));
         solution_table.table().keySet().forEach(pq::offer);
         // now let's begin the algorithm
@@ -162,12 +163,12 @@ public class WeightedGraph<K extends Comparable<K>, V> implements Graph<K, V> {
 
     @Override
     public K min() {
-        return ((TreeMap<K,V>)verticesMap).firstKey();
+        return ((TreeMap<K, V>) verticesMap).firstKey();
     }
 
     @Override
     public K max() {
-        return ((TreeMap<K,V>)verticesMap).lastKey();
+        return ((TreeMap<K, V>) verticesMap).lastKey();
     }
 
     @Override
@@ -200,8 +201,9 @@ public class WeightedGraph<K extends Comparable<K>, V> implements Graph<K, V> {
      * easier to understand.
      * This method abstracts that part away and then prints the requested shortest path for the given path
      * of values.
+     *
      * @param fromVertexKey - beginning vertex
-     * @param toVertexKey - end vertex
+     * @param toVertexKey   - end vertex
      */
     @Override
     public void shortestPath(K fromVertexKey, K toVertexKey) {
@@ -210,11 +212,11 @@ public class WeightedGraph<K extends Comparable<K>, V> implements Graph<K, V> {
         // Using a stack because we want the order to be reversed.
         DijkstraTable<K, V> solution_table = getDijkstraTable(fromVertexKey);
         Stack<GraphVertex<K, V>> vertices_stack = new Stack<>();
-        GraphVertex<K,V> start_vertex = verticesMap.get(fromVertexKey);
+        GraphVertex<K, V> start_vertex = verticesMap.get(fromVertexKey);
         GraphVertex<K, V> destination_vertex = verticesMap.get(toVertexKey);
         vertices_stack.add(destination_vertex);
         while (destination_vertex != null && destination_vertex != start_vertex) {
-            DijkstraTable.DijkstraAttributes<K,V> current = solution_table.table().get(destination_vertex);
+            DijkstraTable.DijkstraAttributes<K, V> current = solution_table.table().get(destination_vertex);
             destination_vertex = current.getParent();
             vertices_stack.add(destination_vertex);
         }
@@ -234,15 +236,16 @@ public class WeightedGraph<K extends Comparable<K>, V> implements Graph<K, V> {
     /**
      * Depth-first-search is used for backtracking, finding all paths, any operation that needs depth first.
      * Time: O(v+e)
+     *
      * @param operation - a terminal operation that is to be performed on each of the vertices.
      */
     @Override
     public void dfs(Consumer<GraphVertex<K, V>> operation, K startKey) {
-        Stack<GraphVertex<K,V>> stack = new Stack<>();
-        Set<GraphVertex<K,V>> seen = new HashSet<>();
+        Stack<GraphVertex<K, V>> stack = new Stack<>();
+        Set<GraphVertex<K, V>> seen = new HashSet<>();
         stack.push(verticesMap.get(startKey));
         while (!stack.empty()) {
-            GraphVertex<K,V> current = stack.pop();
+            GraphVertex<K, V> current = stack.pop();
             if (!seen.contains(current)) {
                 seen.add(current);
                 operation.accept(current);
@@ -259,24 +262,25 @@ public class WeightedGraph<K extends Comparable<K>, V> implements Graph<K, V> {
     /**
      * Breadth-first-search is used for when a level ordered traversal is need, or when the consumer needs to go wide
      * first.
+     *
      * @param operation - a terminal operation that is to be performed on each of the vertices.
      */
     @Override
     public void bfs(Consumer<GraphVertex<K, V>> operation, K startKey) {
-        Queue<GraphVertex<K,V>> queue = new LinkedList<>();
-        Set<GraphVertex<K,V>> seen = new HashSet<>();
+        Queue<GraphVertex<K, V>> queue = new LinkedList<>();
+        Set<GraphVertex<K, V>> seen = new HashSet<>();
         queue.add(verticesMap.get(startKey));
         while (!queue.isEmpty()) {
-            GraphVertex<K,V> current = queue.poll();
+            GraphVertex<K, V> current = queue.poll();
             if (!seen.contains(current)) {
                 seen.add(current);
                 operation.accept(current);
             }
             for (GraphVertex<K, V> adjacent :
                     current.adjacencyList()) {
-             if (!seen.contains(adjacent)) {
-                 queue.add(adjacent);
-             }
+                if (!seen.contains(adjacent)) {
+                    queue.add(adjacent);
+                }
             }
         }
     }
