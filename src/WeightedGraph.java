@@ -92,7 +92,7 @@ public class WeightedGraph<K extends Comparable<K>, V> implements Graph<K, V> {
     /**
      * This shortest path method uses Dijkstra's famous algorithm for finding the shortest path from one vertex to
      * another vertex, by using a non-negative weighted graph.
-     * Dijkstra's solution works by using a n x 3 table to store the least costly distances from the start node to the
+     * Dijkstra's solution works by using an n x 3 table to store the least costly distances from the start node to the
      * currently iterated vertex, as well as storing the previous index, or parent index as the third column in the
      * table. A visualization helps for understanding this, because the table is updated, if there is a better path
      * distance value found when traversing the graph structure.
@@ -110,7 +110,7 @@ public class WeightedGraph<K extends Comparable<K>, V> implements Graph<K, V> {
      * +------------------------------------------------+
      * +   D       |   3               |   B            +
      * +------------------------------------------------+
-     * Credits: (Back to Back SWE)[https://www.youtube.com/watch?v=K_1urzWrzLs]
+     * Credits: (Back to Back SWE)[<a href="https://www.youtube.com/watch?v=K_1urzWrzLs">...</a>]
      *
      * @param fromVertexKey - the starting vertex
      * @return DijkstraTable - the table object with the solutions
@@ -196,8 +196,8 @@ public class WeightedGraph<K extends Comparable<K>, V> implements Graph<K, V> {
     }
 
     /**
-     * The Dijkstra table solves the shortest path problem for all of the vertices when given a from key.
-     * Of course the A* algorithm is better, because it doesn't visit all of the vertices, but this is
+     * The Dijkstra table solves the shortest path problem for all the vertices when given a from key.
+     * Of course the A* algorithm is better, because it doesn't visit all the vertices, but this is
      * easier to understand.
      * This method abstracts that part away and then prints the requested shortest path for the given path
      * of values.
