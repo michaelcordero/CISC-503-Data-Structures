@@ -8,7 +8,7 @@ import java.util.Map;
  * @param <K> - type of keys
  * @param <V> - type of values
  */
-public class AVLTree<K,V> extends BinarySearchTree<K,V> {
+public class AVLTree<K extends Comparable<K>,V> extends BinarySearchTree<K,V> {
     ///////////////////////////////////////////////
     // properties
     //////////////////////////////////////////////
@@ -145,7 +145,7 @@ public class AVLTree<K,V> extends BinarySearchTree<K,V> {
     @Override
     public V put(K key, V value) {
         V to_return = super.put(key,value);
-        if (size() != 1) {
+        if (!isBalanced()) {
             balance();
         }
         return to_return;
@@ -154,7 +154,7 @@ public class AVLTree<K,V> extends BinarySearchTree<K,V> {
     @Override
     public V remove(Object key) {
         V to_return = super.remove(key);
-        if (size() != 1) {
+        if (!isBalanced()) {
             balance();
         }
         return to_return;

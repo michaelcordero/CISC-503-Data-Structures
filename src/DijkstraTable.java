@@ -1,3 +1,4 @@
+import java.util.Comparator;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -35,6 +36,18 @@ public class DijkstraTable<K,V> {
         return "DijkstraTable{" +
                 "table=" + table +
                 '}';
+    }
+
+    public void display() {
+        System.out.println("======================================================================");
+        System.out.println("========  Vertex      |      Destination      |     Distance  ========");
+        System.out.println("======================================================================");
+        table.entrySet()
+                .stream()
+                .sorted(Comparator.comparing(entry -> entry.getValue().getDistance()))
+                .forEachOrdered((e) ->
+                        System.out.format("%15s%15s%15s%n", e.getKey().getKey(),
+                                e.getValue().getParent().getKey(), e.getValue().getDistance()));
     }
     ///////////////////////////////////////////////
     // inner class

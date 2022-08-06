@@ -48,6 +48,7 @@ public interface BinaryTree<K, V> extends Map<K, V> {
     ///////////////////////////////////////////////
     // definition methods
     ///////////////////////////////////////////////
+    boolean isBalanced();
     void balance();
     int height();
     V min();
